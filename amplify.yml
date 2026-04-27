@@ -1,0 +1,23 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+        - sed -i "s|PROD_USER_POOL_ID|$PROD_USER_POOL_ID|g" src/environments/environment.prod.ts
+        - sed -i "s|PROD_USER_POOL_CLIENT_ID|$PROD_USER_POOL_CLIENT_ID|g" src/environments/environment.prod.ts
+        - sed -i "s|PROD_REGION|$PROD_REGION|g" src/environments/environment.prod.ts
+        - sed -i "s|PROD_OAUTH_DOMAIN|$PROD_OAUTH_DOMAIN|g" src/environments/environment.prod.ts
+        - sed -i "s|PROD_DOMAIN|$PROD_DOMAIN|g" src/environments/environment.prod.ts
+        - sed -i "s|PROD_BACKEND_API|$PROD_BACKEND_API|g" src/environments/environment.prod.ts
+        - cp src/environments/environment.prod.ts src/environments/environment.ts
+    build:
+      commands:
+        - npm run build -- --configuration production
+  artifacts:
+    baseDirectory: dist/p-scheduler-web/browser
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
