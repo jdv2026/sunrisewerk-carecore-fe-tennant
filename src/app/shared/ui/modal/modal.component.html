@@ -1,0 +1,12 @@
+<div class="modal-backdrop" (click)="dismiss()">
+    <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <div class="modal__icon">
+            <span class="material-icons-round">{{ icon() }}</span>
+        </div>
+        <h2 class="modal__title">{{ title() }}</h2>
+        <p class="modal__body">{{ body() }}</p>
+        <button class="btn btn-primary btn-lg modal__cta" (click)="dismiss()">
+            {{ ctaLabel() }}
+        </button>
+    </div>
+</div>

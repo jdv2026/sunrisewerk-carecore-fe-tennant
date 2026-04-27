@@ -1,0 +1,323 @@
+@if (isLoading()) {
+    <div class="loading-overlay">
+        <div class="loading-card">
+            <div class="loading-spinner"></div>
+            <p class="loading-title">
+                @if (step() === 'confirm') { Verifying… }
+                @else { Creating your account… }
+            </p>
+            <p class="loading-sub">Please wait a moment</p>
+        </div>
+    </div>
+}
+
+<div class="auth-layout">
+    <!-- Left panel -->
+    <div class="auth-panel">
+        <div class="auth-panel__inner">
+            <a href="/" class="auth-brand">
+                <span class="auth-brand__icon">
+                    <span class="material-icons-round">favorite</span>
+                </span>
+                <span>Care<strong>Core</strong></span>
+            </a>
+
+            <div class="auth-panel__content">
+                <div class="auth-panel__perks">
+                    <h2 class="auth-panel__perks-title">Everything your clinic needs</h2>
+                    <ul class="perk-list">
+                        <li class="perk-item">
+                            <span class="perk-item__icon material-icons-round">check_circle</span>
+                            <div>
+                                <div class="perk-item__title">Smart appointment scheduling</div>
+                                <div class="perk-item__desc">Drag-and-drop calendar with real-time sync</div>
+                            </div>
+                        </li>
+                        <li class="perk-item">
+                            <span class="perk-item__icon material-icons-round">check_circle</span>
+                            <div>
+                                <div class="perk-item__title">Automated patient reminders</div>
+                                <div class="perk-item__desc">Reduce no-shows by up to 70%</div>
+                            </div>
+                        </li>
+                        <li class="perk-item">
+                            <span class="perk-item__icon material-icons-round">check_circle</span>
+                            <div>
+                                <div class="perk-item__title">Multi-clinic management</div>
+                                <div class="perk-item__desc">All your branches in one dashboard</div>
+                            </div>
+                        </li>
+                        <li class="perk-item">
+                            <span class="perk-item__icon material-icons-round">check_circle</span>
+                            <div>
+                                <div class="perk-item__title">HIPAA-compliant & secure</div>
+                                <div class="perk-item__desc">End-to-end encryption on all patient data</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="auth-panel__trial-badge">
+                    <span class="material-icons-round">workspace_premium</span>
+                    <div>
+                        <div class="trial-badge__title">Free 3-month trial</div>
+                        <div class="trial-badge__sub">No credit card required · Cancel anytime</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right form -->
+    <div class="auth-form-side">
+        <div class="auth-form-wrap">
+
+            @if (step() === 'register') {
+                <div class="auth-form__header">
+                    <h1 class="auth-form__title">Create your account</h1>
+                    <p class="auth-form__subtitle">Start your free 3-month trial — no credit card needed.</p>
+                </div>
+
+                <button type="button" class="btn-google" (click)="signUpWithGoogle()">
+                    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+                        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+                        <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+                        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                    </svg>
+                    Sign up with Google
+                </button>
+
+                <div class="auth-divider"><span>or</span></div>
+
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+                    <!-- Name row -->
+                    <div class="field-row">
+                        <div class="field" [class.field--error]="givenName.invalid && givenName.touched">
+                            <label class="field__label" for="givenName">First name</label>
+                            <div class="field__input-wrap">
+                                <span class="field__icon material-icons-round">person_outline</span>
+                                <input
+                                    id="givenName"
+                                    type="text"
+                                    class="field__input"
+                                    placeholder="John"
+                                    formControlName="givenName"
+                                    autocomplete="given-name"
+                                />
+                            </div>
+                            @if (givenName.invalid && givenName.touched) {
+                                <span class="field__error">First name is required.</span>
+                            }
+                        </div>
+
+                        <div class="field" [class.field--error]="familyName.invalid && familyName.touched">
+                            <label class="field__label" for="familyName">Last name</label>
+                            <div class="field__input-wrap">
+                                <span class="field__icon material-icons-round">person_outline</span>
+                                <input
+                                    id="familyName"
+                                    type="text"
+                                    class="field__input"
+                                    placeholder="Doe"
+                                    formControlName="familyName"
+                                    autocomplete="family-name"
+                                />
+                            </div>
+                            @if (familyName.invalid && familyName.touched) {
+                                <span class="field__error">Last name is required.</span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="field" [class.field--error]="email.invalid && email.touched">
+                        <label class="field__label" for="email">Work email</label>
+                        <div class="field__input-wrap">
+                            <span class="field__icon material-icons-round">mail_outline</span>
+                            <input
+                                id="email"
+                                type="email"
+                                class="field__input"
+                                placeholder="you@clinic.com"
+                                formControlName="email"
+                                autocomplete="email"
+                            />
+                        </div>
+                        @if (email.invalid && email.touched) {
+                            <span class="field__error">
+                                @if (email.errors?.['required']) { Email is required. }
+                                @else if (email.errors?.['email']) { Enter a valid email address. }
+                                @else if (email.errors?.['minlength']) { Email must be at least 6 characters. }
+                                @else if (email.errors?.['maxlength']) { Email must not exceed 45 characters. }
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Password -->
+                    <div class="field" [class.field--error]="password.invalid && password.touched">
+                        <label class="field__label" for="password">Password</label>
+                        <div class="field__input-wrap">
+                            <span class="field__icon material-icons-round">lock_outline</span>
+                            <input
+                                id="password"
+                                [type]="showPassword() ? 'text' : 'password'"
+                                class="field__input field__input--has-toggle"
+                                placeholder="Min. 8 characters"
+                                formControlName="password"
+                                autocomplete="new-password"
+                            />
+                            <button
+                                type="button"
+                                class="field__toggle"
+                                (click)="togglePassword()"
+                                [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+                            >
+                                <span class="material-icons-round">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
+                            </button>
+                        </div>
+                        @if (password.value) {
+                            <div class="password-strength">
+                                <div class="password-strength__bars">
+                                    <div class="bar" [class.filled]="true" [class]="'bar--' + passwordStrength"></div>
+                                    <div class="bar" [class.filled]="passwordStrength === 'fair' || passwordStrength === 'strong'" [class]="'bar--' + passwordStrength"></div>
+                                    <div class="bar" [class.filled]="passwordStrength === 'strong'" [class]="'bar--' + passwordStrength"></div>
+                                </div>
+                                <span class="password-strength__label" [class]="'label--' + passwordStrength">
+                                    {{ passwordStrength | titlecase }}
+                                </span>
+                            </div>
+                        }
+                        @if (password.invalid && password.touched) {
+                            <span class="field__error">
+                                @if (password.errors?.['required']) { Password is required. }
+                                @else if (password.errors?.['minlength']) { Password must be at least 8 characters. }
+                                @else if (password.errors?.['maxlength']) { Password must not exceed 45 characters. }
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="field" [class.field--error]="(confirmPassword.invalid && confirmPassword.touched) || passwordMismatch">
+                        <label class="field__label" for="confirmPassword">Confirm password</label>
+                        <div class="field__input-wrap">
+                            <span class="field__icon material-icons-round">lock_outline</span>
+                            <input
+                                id="confirmPassword"
+                                [type]="showConfirmPassword() ? 'text' : 'password'"
+                                class="field__input field__input--has-toggle"
+                                placeholder="Re-enter your password"
+                                formControlName="confirmPassword"
+                                autocomplete="new-password"
+                            />
+                            <button
+                                type="button"
+                                class="field__toggle"
+                                (click)="toggleConfirmPassword()"
+                                [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'"
+                            >
+                                <span class="material-icons-round">{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</span>
+                            </button>
+                        </div>
+                        @if (confirmPassword.invalid && confirmPassword.touched) {
+                            <span class="field__error">Please confirm your password.</span>
+                        } @else if (passwordMismatch) {
+                            <span class="field__error">Passwords do not match.</span>
+                        }
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="field field--inline" [class.field--error]="terms.invalid && terms.touched">
+                        <label class="checkbox">
+                            <input type="checkbox" formControlName="terms" />
+                            <span class="checkbox__box"></span>
+                            <span class="checkbox__label">
+                                I agree to the
+                                <a routerLink="/legal/terms" target="_blank" class="auth-link">Terms of Service</a>
+                                and
+                                <a routerLink="/legal/privacy" target="_blank" class="auth-link">Privacy Policy</a>
+                            </span>
+                        </label>
+                        @if (terms.invalid && terms.touched) {
+                            <span class="field__error" style="margin-top: 6px; display: block;">
+                                You must accept the terms to continue.
+                            </span>
+                        }
+                    </div>
+
+                    @if (error()) {
+                        <div class="auth-error">
+                            <span class="material-icons-round">error_outline</span>
+                            {{ error() }}
+                        </div>
+                    }
+
+                    <!-- Submit -->
+                    <button type="submit" class="btn btn-primary btn-lg auth-submit" [disabled]="isLoading()">
+                        @if (isLoading()) {
+                            <span class="spinner"></span>
+                            Creating account…
+                        } @else {
+                            <span class="material-icons-round" style="font-size: 18px">rocket_launch</span>
+                            Create Free Account
+                        }
+                    </button>
+
+                </form>
+
+                <p class="auth-footer-text">
+                    Already have an account?
+                    <a routerLink="/auth/login" class="auth-link">Sign in</a>
+                </p>
+            }
+
+            @if (step() === 'confirm') {
+                <div class="auth-form__header">
+                    <h1 class="auth-form__title">Check your email</h1>
+                    <p class="auth-form__subtitle">We sent a 6-digit verification code to <strong>{{ email.value }}</strong></p>
+                </div>
+
+                @if (error()) {
+                    <div class="auth-error">
+                        <span class="material-icons-round">error_outline</span>
+                        {{ error() }}
+                    </div>
+                }
+
+                <form [formGroup]="confirmForm" (ngSubmit)="onConfirm()" novalidate>
+                    <div class="field" [class.field--error]="code.invalid && code.touched">
+                        <label class="field__label" for="code">Verification code</label>
+                        <div class="field__input-wrap">
+                            <span class="field__icon material-icons-round">verified</span>
+                            <input
+                                id="code"
+                                type="text"
+                                inputmode="numeric"
+                                class="field__input"
+                                placeholder="Enter 6-digit code"
+                                formControlName="code"
+                                maxlength="6"
+                                autocomplete="one-time-code"
+                            />
+                        </div>
+                        @if (code.invalid && code.touched) {
+                            <span class="field__error">Enter the 6-digit code sent to your email.</span>
+                        }
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg auth-submit" [disabled]="isLoading()">
+                        @if (isLoading()) {
+                            <span class="spinner"></span>
+                            Verifying…
+                        } @else {
+                            <span class="material-icons-round" style="font-size: 18px">check_circle</span>
+                            Verify & Continue
+                        }
+                    </button>
+                </form>
+            }
+
+        </div>
+    </div>
+</div>

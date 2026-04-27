@@ -1,0 +1,174 @@
+<div class="legal-page">
+    <div class="legal-container">
+
+        <div class="legal-header">
+            <a routerLink="/" class="legal-brand">
+                <span class="legal-brand__icon">
+                    <span class="material-icons-round">favorite</span>
+                </span>
+                <span>Care<strong>Core</strong></span>
+            </a>
+            <h1 class="legal-title">Privacy Policy</h1>
+            <p class="legal-meta">Last updated: {{ lastUpdated }}</p>
+        </div>
+
+        <div class="legal-body">
+
+            <div class="legal-notice">
+                <span class="material-icons-round">info</span>
+                This Privacy Policy explains how CareCore collects, uses, and protects your information. CareCore is committed to safeguarding the privacy of healthcare providers and their patients.
+            </div>
+
+            <section class="legal-section">
+                <h2>1. Who We Are</h2>
+                <p>CareCore is a clinic management platform designed for healthcare providers. We operate as a Business Associate under HIPAA when processing Protected Health Information (PHI) on behalf of our customers (Covered Entities). Our platform is hosted on Amazon Web Services (AWS) infrastructure in the Asia Pacific region.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>2. Information We Collect</h2>
+                <p>We collect information in the following categories:</p>
+                <h3>Account Information</h3>
+                <ul>
+                    <li>Name, email address, and password (hashed) when you register</li>
+                    <li>Clinic name, address, and contact details during onboarding</li>
+                    <li>Billing information if you subscribe to a paid plan</li>
+                    <li>Google account profile information if you sign in with Google</li>
+                </ul>
+                <h3>Usage Data</h3>
+                <ul>
+                    <li>Log data including IP address, browser type, and pages visited</li>
+                    <li>Feature usage patterns to improve the Service</li>
+                    <li>Error reports and diagnostic information</li>
+                </ul>
+                <h3>Patient and Clinical Data (PHI)</h3>
+                <ul>
+                    <li>Patient names, contact information, and appointment records you enter</li>
+                    <li>Any health-related information you store through the platform</li>
+                    <li>This data is yours — we process it only to provide the Service</li>
+                </ul>
+            </section>
+
+            <section class="legal-section">
+                <h2>3. How We Use Your Information</h2>
+                <p>We use collected information to:</p>
+                <ul>
+                    <li>Provide, operate, and improve the CareCore platform</li>
+                    <li>Authenticate users and maintain account security</li>
+                    <li>Send transactional emails (verification codes, appointment reminders)</li>
+                    <li>Send service updates and important notices</li>
+                    <li>Respond to support requests</li>
+                    <li>Comply with legal obligations</li>
+                    <li>Detect and prevent fraud or unauthorized access</li>
+                </ul>
+                <p>We do not sell your personal information or patient data to third parties. We do not use PHI for advertising or marketing purposes.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>4. HIPAA Compliance</h2>
+                <p>CareCore is designed with HIPAA compliance in mind. As a Business Associate, we:</p>
+                <ul>
+                    <li>Apply end-to-end encryption to all PHI in transit (TLS 1.2+) and at rest (AES-256)</li>
+                    <li>Limit PHI access to authorized personnel only</li>
+                    <li>Maintain audit logs of PHI access and modifications</li>
+                    <li>Sign a Business Associate Agreement (BAA) with customers upon request</li>
+                    <li>Report any PHI breach to affected Covered Entities within 60 days of discovery</li>
+                    <li>Delete PHI upon termination as specified in the BAA</li>
+                </ul>
+                <p>Healthcare providers using CareCore remain the Covered Entity and are responsible for their own HIPAA compliance obligations, including obtaining patient consent for data processing.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>5. Data Security</h2>
+                <p>We implement industry-standard security measures including:</p>
+                <ul>
+                    <li>AWS Cognito for secure authentication with multi-factor authentication support</li>
+                    <li>Encrypted data storage on AWS with access controls</li>
+                    <li>Regular security audits and vulnerability assessments</li>
+                    <li>Staff training on data privacy and security practices</li>
+                    <li>Incident response procedures for security events</li>
+                </ul>
+                <p>No method of transmission over the Internet is 100% secure. While we strive to protect your data, we cannot guarantee absolute security.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>6. Data Retention</h2>
+                <p>We retain your data as follows:</p>
+                <ul>
+                    <li><strong>Account data:</strong> Retained while your account is active and for 30 days after termination</li>
+                    <li><strong>Patient and clinical data:</strong> Retained for the duration of your subscription and 30 days after termination, unless longer retention is required by law</li>
+                    <li><strong>Usage logs:</strong> Retained for up to 12 months for security and debugging purposes</li>
+                    <li><strong>Backup data:</strong> May be retained for up to 90 days in encrypted backups</li>
+                </ul>
+            </section>
+
+            <section class="legal-section">
+                <h2>7. Third-Party Services</h2>
+                <p>CareCore uses the following third-party services to operate the platform:</p>
+                <ul>
+                    <li><strong>Amazon Web Services (AWS):</strong> Cloud infrastructure, database, and authentication (Cognito)</li>
+                    <li><strong>Google OAuth:</strong> Optional sign-in with Google — governed by Google's Privacy Policy</li>
+                    <li><strong>Email service providers:</strong> For sending verification codes and appointment reminders</li>
+                </ul>
+                <p>These providers are contractually required to protect your data and may only process it as directed by us.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>8. Cookies and Tracking</h2>
+                <p>CareCore uses essential cookies and browser storage (localStorage/sessionStorage) for:</p>
+                <ul>
+                    <li>Maintaining your authenticated session</li>
+                    <li>Remembering your login preferences ("Remember me" setting)</li>
+                    <li>Storing user interface preferences</li>
+                </ul>
+                <p>We do not use advertising cookies or third-party tracking pixels.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>9. Your Rights</h2>
+                <p>You have the right to:</p>
+                <ul>
+                    <li><strong>Access:</strong> Request a copy of the personal data we hold about you</li>
+                    <li><strong>Correction:</strong> Update or correct inaccurate personal data</li>
+                    <li><strong>Deletion:</strong> Request deletion of your account and associated data</li>
+                    <li><strong>Export:</strong> Download your clinic data in a portable format</li>
+                    <li><strong>Opt-out:</strong> Unsubscribe from non-essential communications</li>
+                </ul>
+                <p>To exercise these rights, contact us at <a href="mailto:privacy@carecore.app">privacy&#64;carecore.app</a>. We will respond within 30 days.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>10. Children's Privacy</h2>
+                <p>CareCore is not intended for use by individuals under 18. We do not knowingly collect personal information from minors. Patient records of minor patients may be entered by healthcare providers in compliance with applicable laws and parental consent requirements.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>11. International Data Transfers</h2>
+                <p>Your data is stored on AWS servers in the Asia Pacific (Singapore) region. If you access the Service from outside this region, your data may be transferred internationally. We ensure appropriate safeguards are in place for any such transfers.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>12. Changes to This Policy</h2>
+                <p>We may update this Privacy Policy periodically. We will notify registered users by email at least 14 days before material changes take effect. Continued use of the Service after changes become effective constitutes acceptance of the revised Policy.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>13. Contact Us</h2>
+                <p>If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact:</p>
+                <div class="legal-contact">
+                    <p><strong>CareCore Privacy Team</strong></p>
+                    <p>Email: <a href="mailto:privacy@carecore.app">privacy&#64;carecore.app</a></p>
+                </div>
+            </section>
+
+        </div>
+
+        <div class="legal-footer">
+            <a routerLink="/auth/register" class="legal-back">
+                <span class="material-icons-round">arrow_back</span>
+                Back to Registration
+            </a>
+            <a routerLink="/legal/terms" class="legal-link">Terms of Service</a>
+        </div>
+
+    </div>
+</div>

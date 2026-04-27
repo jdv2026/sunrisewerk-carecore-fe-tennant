@@ -1,0 +1,25 @@
+<section class="section how-it-works" id="how-it-works">
+    <div class="container">
+        <div class="text-center">
+            <div class="tag">
+                <span class="material-icons-round" style="font-size: 14px">route</span>
+                Simple Onboarding
+            </div>
+            <h2 class="section-title">Up and Running in Minutes</h2>
+            <p class="section-subtitle">No lengthy setup. No IT team required. Three steps and your clinic is live.</p>
+        </div>
+
+        <div class="hiw__steps">
+            @for (step of steps; track step.number) {
+                <div class="hiw__step">
+                    <div class="hiw__step-number">{{ step.number }}</div>
+                    <div class="hiw__step-icon">
+                        <span class="material-icons-round">{{ step.icon }}</span>
+                    </div>
+                    <h3 class="hiw__step-title">{{ step.title }}</h3>
+                    <p class="hiw__step-desc">{{ step.desc }}</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>

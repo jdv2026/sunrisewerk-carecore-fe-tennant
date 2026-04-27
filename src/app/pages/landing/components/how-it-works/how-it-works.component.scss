@@ -1,0 +1,89 @@
+.how-it-works {
+    background: var(--white);
+}
+
+.hiw {
+    &__steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        margin-top: 56px;
+        position: relative;
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: 36px;
+            left: calc(16.66% + 24px);
+            right: calc(16.66% + 24px);
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0.3;
+        }
+    }
+
+    &__step {
+        text-align: center;
+        padding: 32px 24px;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        background: var(--surface);
+        transition: all 0.25s;
+        position: relative;
+
+        &:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+    }
+
+    &__step-number {
+        font-size: 48px;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 12px;
+        opacity: 0.2;
+    }
+
+    &__step-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: #fff;
+        .material-icons-round {
+            font-size: 28px;
+        }
+    }
+
+    &__step-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+
+    &__step-desc {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.7;
+    }
+}
+
+@media (max-width: 768px) {
+    .hiw__steps {
+        grid-template-columns: 1fr;
+        &::before {
+            display: none;
+        }
+    }
+}
