@@ -42,6 +42,10 @@ export class AuthService {
     }
 
     async loadCurrentUser(): Promise<void> {
+        if (!sessionStorage.getItem('app_session_active')) {
+            localStorage.removeItem('carecore_pool');
+            sessionStorage.setItem('app_session_active', '1');
+        }
         const pool = localStorage.getItem('carecore_pool');
         // ── Staff ──────────────────────────────────────────────────────────
         if (pool === 'staff') {
