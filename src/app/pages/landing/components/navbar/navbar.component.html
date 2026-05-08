@@ -1,0 +1,39 @@
+<nav class="navbar" [class.scrolled]="scrolled()">
+    <div class="container navbar__inner">
+        <a href="#" class="navbar__brand">
+            <span class="navbar__logo-icon">
+                <span class="material-icons-round">favorite</span>
+            </span>
+            <span class="navbar__logo-text">Care<strong>Core</strong></span>
+        </a>
+
+        <ul class="navbar__links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+        </ul>
+
+        <div class="navbar__actions">
+            <a routerLink="/auth/login" class="btn btn-outline">Log In</a>
+            <a routerLink="/auth/register" class="btn btn-primary">Get Started Free</a>
+        </div>
+
+        <button class="navbar__hamburger" (click)="toggleMenu()" [class.open]="menuOpen()">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+
+    <div class="navbar__mobile" [class.open]="menuOpen()">
+        <ul>
+            <li><a href="#features" (click)="toggleMenu()">Features</a></li>
+            <li><a href="#how-it-works" (click)="toggleMenu()">How It Works</a></li>
+            <li><a href="#pricing" (click)="toggleMenu()">Pricing</a></li>
+            <li><a href="#testimonials" (click)="toggleMenu()">Testimonials</a></li>
+        </ul>
+        <div class="navbar__mobile-actions">
+            <a routerLink="/auth/login" class="btn btn-outline" style="width: 100%; justify-content: center">Log In</a>
+            <a routerLink="/auth/register" class="btn btn-primary" style="width: 100%; justify-content: center">Get Started Free</a>
+        </div>
+    </div>
+</nav>

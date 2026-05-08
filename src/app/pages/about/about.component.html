@@ -1,0 +1,81 @@
+<div class="about-page">
+
+    <header class="about-hero">
+        <div class="container">
+            <a routerLink="/" class="about-brand">
+                <span class="about-brand__icon">
+                    <span class="material-icons-round">favorite</span>
+                </span>
+                <span>Care<strong>Core</strong></span>
+            </a>
+            <div class="tag">
+                <span class="material-icons-round" style="font-size: 14px">info</span>
+                Our Story
+            </div>
+            <h1 class="about-hero__title">Built for the people<br /><span class="gradient-text">who keep us healthy</span></h1>
+            <p class="about-hero__sub">CareCore was founded by a team of engineers and healthcare professionals who saw firsthand how much time clinics lost to administrative chaos — and decided to fix it.</p>
+        </div>
+    </header>
+
+    <section class="about-mission section">
+        <div class="container about-mission__inner">
+            <div class="about-mission__text">
+                <div class="tag">
+                    <span class="material-icons-round" style="font-size: 14px">flag</span>
+                    Our Mission
+                </div>
+                <h2 class="section-title">Giving clinics back their time</h2>
+                <p>Healthcare providers spend an average of 2–3 hours per day on administrative tasks — scheduling, reminders, records, billing coordination. That's time stolen from patients.</p>
+                <p>CareCore exists to eliminate that friction. We build tools that handle the operational side of running a clinic so that doctors, nurses, and clinic staff can focus entirely on care.</p>
+                <p>We're a remote-first team serving clinics across Southeast Asia and beyond, hosted on secure AWS infrastructure.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-values section-sm">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 56px">
+                <div class="tag">
+                    <span class="material-icons-round" style="font-size: 14px">star</span>
+                    What We Stand For
+                </div>
+                <h2 class="section-title">Our values</h2>
+                <p class="section-subtitle">These aren't posters on a wall. They're the decisions we make every day.</p>
+            </div>
+            <div class="values-grid">
+                @for (value of values; track value.title) {
+                    <div class="value-card">
+                        <div class="value-card__icon">
+                            <span class="material-icons-round">{{ value.icon }}</span>
+                        </div>
+                        <h3>{{ value.title }}</h3>
+                        <p>{{ value.description }}</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <section class="about-cta">
+        <div class="container about-cta__inner">
+            <h2>Ready to transform your clinic?</h2>
+            <p>Join thousands of healthcare providers already using CareCore.</p>
+            <div class="about-cta__actions">
+                <a routerLink="/auth/register" class="btn btn-primary btn-lg">Start Free Trial</a>
+                <a routerLink="/blog" class="btn btn-outline btn-lg">Read Our Blog</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="about-footer">
+        <div class="container about-footer__inner">
+            <span>© {{ year }} CareCore Technologies, Inc.</span>
+            <div class="about-footer__links">
+                <a routerLink="/legal/privacy">Privacy</a>
+                <a routerLink="/legal/terms">Terms</a>
+                <a routerLink="/legal/cookies">Cookies</a>
+            </div>
+        </div>
+    </footer>
+
+</div>

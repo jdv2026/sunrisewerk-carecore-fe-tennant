@@ -1,0 +1,272 @@
+<div class="page-layout">
+
+    <app-sidebar [open]="sidebarOpen()" (closeRequest)="sidebarOpen.set(false)" />
+
+    <div class="page-main">
+
+        <header class="topbar">
+            <div class="topbar__left">
+                <button class="hamburger" (click)="sidebarOpen.set(!sidebarOpen())">
+                    <span class="material-icons-round">menu</span>
+                </button>
+                <button class="back-btn" (click)="goBack()">
+                    <span class="material-icons-round">arrow_back</span>
+                </button>
+                <h1 class="topbar__title">Staff Detail</h1>
+            </div>
+        </header>
+
+        <main class="page-content">
+
+            @if (isLoading()) {
+                <div class="page-loading">
+                    <span class="page-spinner"></span>
+                    <p>Loading…</p>
+                </div>
+            } @else if (!staff()) {
+                <div class="not-found">
+                    <span class="material-icons-round">person_off</span>
+                    <p>Staff member not found.</p>
+                    <button class="btn btn-outline" (click)="goBack()">Back to Staff</button>
+                </div>
+            } @else {
+
+                <div class="detail-grid">
+
+                    <div class="detail-col">
+
+                        <!-- Profile card -->
+                        <div class="profile-card">
+                            <div class="profile-card__avatar staff-avatar--{{ roleColors[staff()!.role] }}">
+                                {{ initials(staff()!) }}
+                            </div>
+                            <div class="profile-card__name">{{ fullName(staff()!) }}</div>
+                            <div class="profile-card__role">{{ roleLabel[staff()!.role] }}</div>
+                            @if (staff()!.specialty) {
+                                <span class="specialty-pill">{{ staff()!.specialty }}</span>
+                            }
+                        </div>
+
+                        <!-- Leave card -->
+                        <div class="detail-card">
+                            <div class="detail-card__header">
+                                <span class="material-icons-round">event_busy</span>
+                                Leave
+                            </div>
+
+                            @if (isLoadingLeaves()) {
+                                <div class="no-leave">
+                                    <span class="leave-spinner"></span>
+                                </div>
+                            } @else if (leavesError()) {
+                                <div class="no-leave">
+                                    <span class="material-icons-round" style="color:#ef4444">error_outline</span>
+                                    <p>{{ leavesError() }}</p>
+                                </div>
+                            } @else if (leaves().length === 0) {
+                                <div class="no-leave">
+                                    <span class="material-icons-round">beach_access</span>
+                                    <p>No leave records.</p>
+                                </div>
+                            } @else {
+                                <ul class="leave-list">
+                                    @for (leave of leaves(); track leave.id) {
+                                        <li class="leave-item">
+                                            <div class="leave-item__top">
+                                                <span class="leave-item__type">{{ leaveTypeLabel[leave.type] ?? leave.type }}</span>
+                                                <span class="leave-badge leave-badge--{{ leave.status }}">
+                                                    {{ leaveStatusLabel[leave.status] ?? leave.status }}
+                                                </span>
+                                            </div>
+                                            <div class="leave-item__dates">
+                                                <span class="material-icons-round">date_range</span>
+                                                {{ formatLeaveDate(leave.start_date) }} – {{ formatLeaveDate(leave.end_date) }}
+                                            </div>
+                                            @if (leave.reason) {
+                                                <div class="leave-item__reason">{{ leave.reason }}</div>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </div>
+
+                    </div>
+
+                    <div class="detail-col">
+
+                        <!-- Contact info -->
+                        <div class="detail-card">
+                            <div class="detail-card__header">
+                                <span class="material-icons-round">contact_page</span>
+                                Contact Information
+                            </div>
+                            <ul class="info-list">
+                                <li class="info-row">
+                                    <span class="info-row__label">Email</span>
+                                    <span class="info-row__value">{{ staff()!.email }}</span>
+                                </li>
+                                @if (staff()!.number) {
+                                    <li class="info-row">
+                                        <span class="info-row__label">Phone</span>
+                                        <span class="info-row__value">{{ staff()!.number }}</span>
+                                    </li>
+                                }
+                                <li class="info-row">
+                                    <span class="info-row__label">Role</span>
+                                    <span class="info-row__value">{{ roleLabel[staff()!.role] }}</span>
+                                </li>
+                                @if (staff()!.specialty) {
+                                    <li class="info-row">
+                                        <span class="info-row__label">Specialty</span>
+                                        <span class="info-row__value">{{ staff()!.specialty }}</span>
+                                    </li>
+                                }
+                                <li class="info-row info-row--action">
+                                    <span class="info-row__label">Status</span>
+                                    <div class="status-toggle">
+                                        <button type="button" class="status-toggle__btn"
+                                            [class.status-toggle__btn--active]="staff()!.status === 'active'"
+                                            [disabled]="isUpdatingStatus() || staff()!.status === 'active'"
+                                            (click)="updateStatus('active')">
+                                            <span class="material-icons-round">check_circle</span>
+                                            Active
+                                        </button>
+                                        <button type="button" class="status-toggle__btn status-toggle__btn--danger"
+                                            [class.status-toggle__btn--active-danger]="staff()!.status === 'inactive'"
+                                            [disabled]="isUpdatingStatus() || staff()!.status === 'inactive'"
+                                            (click)="updateStatus('inactive')">
+                                            <span class="material-icons-round">cancel</span>
+                                            Inactive
+                                        </button>
+                                        @if (isUpdatingStatus()) {
+                                            <span class="mini-spinner mini-spinner--dark"></span>
+                                        }
+                                    </div>
+                                </li>
+                            </ul>
+                            @if (statusError()) {
+                                <div class="sched-error" style="margin: 0 20px 12px;">
+                                    <span class="material-icons-round">error_outline</span>
+                                    {{ statusError() }}
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Schedule -->
+                        <div class="detail-card">
+                            <div class="detail-card__header">
+                                <span class="material-icons-round">calendar_month</span>
+                                Schedule
+                                <button type="button" class="sched-add-btn" (click)="showAddForm.set(true)"
+                                    [disabled]="showAddForm()">
+                                    <span class="material-icons-round">add</span>
+                                    Add
+                                </button>
+                            </div>
+
+                            @if (deleteError()) {
+                                <div class="sched-error" style="margin: 12px 20px 0;">
+                                    <span class="material-icons-round">error_outline</span>
+                                    {{ deleteError() }}
+                                </div>
+                            }
+
+                            @if (!staff()!.schedules || staff()!.schedules!.length === 0) {
+                                <div class="no-schedule">
+                                    <span class="material-icons-round">event_busy</span>
+                                    <p>No schedule assigned.</p>
+                                </div>
+                            } @else {
+                                <ul class="schedule-list">
+                                    @for (sched of sortedSchedules(staff()!); track sched.id) {
+                                        <li class="schedule-row">
+                                            <span class="schedule-row__day">{{ formatDay(sched.day) }}</span>
+                                            <span class="schedule-row__time">
+                                                {{ formatTime(sched.start_time) }}
+                                                <span class="schedule-row__sep">–</span>
+                                                {{ formatTime(sched.end_time) }}
+                                            </span>
+                                            <button type="button" class="sched-delete-btn"
+                                                [disabled]="deletingId() === sched.id"
+                                                (click)="deleteSchedule(sched.id)">
+                                                @if (deletingId() === sched.id) {
+                                                    <span class="mini-spinner"></span>
+                                                } @else {
+                                                    <span class="material-icons-round">delete_outline</span>
+                                                }
+                                            </button>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+
+                            @if (showAddForm()) {
+                                <form [formGroup]="scheduleForm" (ngSubmit)="addSchedule()" novalidate class="sched-form">
+                                    @if (scheduleError()) {
+                                        <div class="sched-error">
+                                            <span class="material-icons-round">error_outline</span>
+                                            {{ scheduleError() }}
+                                        </div>
+                                    }
+                                    <div class="sched-form__row">
+                                        <div class="sched-field" [class.sched-field--error]="day.invalid && day.touched">
+                                            <label class="sched-field__label">Day <span class="req">*</span></label>
+                                            <div class="sched-field__wrap sched-field__wrap--select">
+                                                <select class="sched-field__input" formControlName="day">
+                                                    <option value="">Select</option>
+                                                    @for (d of days; track d) {
+                                                        <option [value]="d">{{ formatDay(d) }}</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            @if (day.invalid && day.touched) {
+                                                <span class="sched-field__error">Required.</span>
+                                            }
+                                        </div>
+
+                                        <div class="sched-field" [class.sched-field--error]="startTime.invalid && startTime.touched">
+                                            <label class="sched-field__label">Start <span class="req">*</span></label>
+                                            <div class="sched-field__wrap">
+                                                <input type="time" class="sched-field__input" formControlName="start_time" />
+                                            </div>
+                                            @if (startTime.invalid && startTime.touched) {
+                                                <span class="sched-field__error">Required.</span>
+                                            }
+                                        </div>
+
+                                        <div class="sched-field" [class.sched-field--error]="endTime.invalid && endTime.touched">
+                                            <label class="sched-field__label">End <span class="req">*</span></label>
+                                            <div class="sched-field__wrap">
+                                                <input type="time" class="sched-field__input" formControlName="end_time" />
+                                            </div>
+                                            @if (endTime.invalid && endTime.touched) {
+                                                <span class="sched-field__error">Required.</span>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="sched-form__actions">
+                                        <button type="button" class="btn btn-outline btn--sm" (click)="cancelAdd()" [disabled]="isSaving()">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="btn btn-primary btn--sm" [disabled]="isSaving()">
+                                            @if (isSaving()) {
+                                                <span class="mini-spinner"></span> Saving…
+                                            } @else {
+                                                Save
+                                            }
+                                        </button>
+                                    </div>
+                                </form>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+
+            }
+
+        </main>
+    </div>
+</div>

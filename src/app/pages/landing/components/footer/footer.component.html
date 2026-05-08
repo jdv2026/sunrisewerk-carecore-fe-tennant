@@ -1,0 +1,45 @@
+<footer class="footer">
+    <div class="container">
+        <div class="footer__top">
+            <div class="footer__brand">
+                <a href="#" class="footer__logo">
+                    <span class="footer__logo-icon">
+                        <span class="material-icons-round">favorite</span>
+                    </span>
+                    <span>Care<strong>Core</strong></span>
+                </a>
+                <p class="footer__tagline">
+                    The all-in-one clinic management platform built for modern healthcare teams.
+                </p>
+            </div>
+
+            @for (group of links; track group.heading) {
+                <div class="footer__col">
+                    <h4 class="footer__col-heading">{{ group.heading }}</h4>
+                    <ul>
+                        @for (item of group.items; track item.label) {
+                            <li>
+                                @if (item.route && item.fragment) {
+                                    <a [routerLink]="item.route" [fragment]="item.fragment">{{ item.label }}</a>
+                                } @else if (item.route) {
+                                    <a [routerLink]="item.route">{{ item.label }}</a>
+                                } @else {
+                                    <a href="#">{{ item.label }}</a>
+                                }
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+
+        <div class="footer__bottom">
+            <span>© {{ year }} SunriseWerk Technologies, Inc. All rights reserved.</span>
+            <div class="footer__bottom-links">
+                <a routerLink="/legal/privacy">Privacy</a>
+                <a routerLink="/legal/terms">Terms</a>
+                <a routerLink="/legal/cookies">Cookies</a>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,161 @@
+<div class="modal-backdrop">
+    <div class="ap-modal" role="dialog" aria-modal="true">
+
+        <div class="ap-modal__header">
+            <div class="ap-modal__icon">
+                <span class="material-icons-round">person_add</span>
+            </div>
+            <div>
+                <h2 class="ap-modal__title">Add Patient</h2>
+                <p class="ap-modal__sub">Fill in the patient's basic information.</p>
+            </div>
+            <button class="ap-modal__close" (click)="dismiss()" aria-label="Close">
+                <span class="material-icons-round">close</span>
+            </button>
+        </div>
+
+        @if (error()) {
+            <div class="ap-error">
+                <span class="material-icons-round">error_outline</span>
+                {{ error() }}
+            </div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="ap-form">
+
+            <div class="field-row">
+                <div class="field" [class.field--error]="givenName.invalid && givenName.touched">
+                    <label class="field__label" for="ap-given-name">First name <span class="field__req">*</span></label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">person_outline</span>
+                        <input id="ap-given-name" type="text" class="field__input"
+                            placeholder="Juan" formControlName="given_name" autocomplete="given-name" />
+                    </div>
+                    @if (givenName.invalid && givenName.touched) {
+                        <span class="field__error">
+                            @if (givenName.errors?.['required']) { First name is required. }
+                            @else if (givenName.errors?.['minlength']) { At least 2 characters. }
+                            @else if (givenName.errors?.['maxlength']) { Max 45 characters. }
+                        </span>
+                    }
+                </div>
+
+                <div class="field" [class.field--error]="lastName.invalid && lastName.touched">
+                    <label class="field__label" for="ap-last-name">Last name <span class="field__req">*</span></label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">person_outline</span>
+                        <input id="ap-last-name" type="text" class="field__input"
+                            placeholder="dela Cruz" formControlName="last_name" autocomplete="family-name" />
+                    </div>
+                    @if (lastName.invalid && lastName.touched) {
+                        <span class="field__error">
+                            @if (lastName.errors?.['required']) { Last name is required. }
+                            @else if (lastName.errors?.['minlength']) { At least 2 characters. }
+                            @else if (lastName.errors?.['maxlength']) { Max 45 characters. }
+                        </span>
+                    }
+                </div>
+            </div>
+
+            <div class="field" [class.field--error]="email.invalid && email.touched">
+                <label class="field__label" for="ap-email">Email address <span class="field__req">*</span></label>
+                <div class="field__input-wrap">
+                    <span class="field__icon material-icons-round">mail_outline</span>
+                    <input id="ap-email" type="email" class="field__input"
+                        placeholder="patient@email.com" formControlName="email" autocomplete="email" />
+                </div>
+                @if (email.invalid && email.touched) {
+                    <span class="field__error">
+                        @if (email.errors?.['required']) { Email is required. }
+                        @else if (email.errors?.['email']) { Enter a valid email address. }
+                        @else if (email.errors?.['maxlength']) { Max 45 characters. }
+                    </span>
+                }
+            </div>
+
+            <div class="field-row">
+                <div class="field" [class.field--error]="phone.invalid && phone.touched">
+                    <label class="field__label" for="ap-phone">Phone</label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">phone</span>
+                        <input id="ap-phone" type="tel" class="field__input"
+                            placeholder="+63 912 345 6789" formControlName="phone" autocomplete="tel"
+                            (input)="sanitizePhone($event)" />
+                    </div>
+                    @if (phone.invalid && phone.touched) {
+                        <span class="field__error">
+                            @if (phone.errors?.['maxlength']) { Max 20 characters. }
+                            @else { Digits, +, -, spaces, and () only. }
+                        </span>
+                    }
+                </div>
+
+                <div class="field" [class.field--error]="dob.invalid && dob.touched">
+                    <label class="field__label" for="ap-dob">Date of birth</label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">cake</span>
+                        <input id="ap-dob" type="date" class="field__input field__input--date"
+                            formControlName="dob" [max]="maxDob" />
+                    </div>
+                    @if (dob.invalid && dob.touched) {
+                        <span class="field__error">Date of birth must be in the past.</span>
+                    }
+                </div>
+            </div>
+
+            <div class="field" [class.field--error]="addr.invalid && addr.touched">
+                <label class="field__label" for="ap-addr">Address</label>
+                <div class="field__input-wrap">
+                    <span class="field__icon material-icons-round">home</span>
+                    <input id="ap-addr" type="text" class="field__input"
+                        placeholder="123 Main St" formControlName="addr" autocomplete="street-address" />
+                </div>
+                @if (addr.invalid && addr.touched) {
+                    <span class="field__error">Max 255 characters.</span>
+                }
+            </div>
+
+            <div class="field-row">
+                <div class="field" [class.field--error]="city.invalid && city.touched">
+                    <label class="field__label" for="ap-city">City</label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">location_city</span>
+                        <input id="ap-city" type="text" class="field__input"
+                            placeholder="Cebu City" formControlName="city" autocomplete="address-level2" />
+                    </div>
+                    @if (city.invalid && city.touched) {
+                        <span class="field__error">Max 100 characters.</span>
+                    }
+                </div>
+
+                <div class="field" [class.field--error]="country.invalid && country.touched">
+                    <label class="field__label" for="ap-country">Country</label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">public</span>
+                        <input id="ap-country" type="text" class="field__input"
+                            placeholder="Philippines" formControlName="country" autocomplete="country-name" />
+                    </div>
+                    @if (country.invalid && country.touched) {
+                        <span class="field__error">Max 100 characters.</span>
+                    }
+                </div>
+            </div>
+
+            <div class="ap-modal__actions">
+                <button type="button" class="btn btn-outline" (click)="dismiss()" [disabled]="isLoading()">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="isLoading()">
+                    @if (isLoading()) {
+                        <span class="spinner"></span>
+                        Saving…
+                    } @else {
+                        <span class="material-icons-round" style="font-size:18px">person_add</span>
+                        Add Patient
+                    }
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>

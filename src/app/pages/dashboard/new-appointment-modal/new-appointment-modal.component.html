@@ -1,0 +1,158 @@
+<div class="modal-backdrop">
+    <div class="na-modal" role="dialog" aria-modal="true">
+
+        <div class="na-modal__header">
+            <div class="na-modal__icon">
+                <span class="material-icons-round">event</span>
+            </div>
+            <div>
+                <h2 class="na-modal__title">New Appointment</h2>
+                <p class="na-modal__sub">Book an appointment for an existing patient.</p>
+            </div>
+            <button class="na-modal__close" (click)="dismiss()" aria-label="Close">
+                <span class="material-icons-round">close</span>
+            </button>
+        </div>
+
+        @if (bookingSuccess()) {
+
+            <div class="na-success">
+                <div class="na-success__icon">
+                    <span class="material-icons-round">check_circle</span>
+                </div>
+                <h3 class="na-success__title">Appointment Booked!</h3>
+                <p class="na-success__sub">The appointment has been successfully scheduled.</p>
+
+                <div class="na-success__card">
+                    <div class="na-success__row">
+                        <span class="material-icons-round">mail_outline</span>
+                        <span>{{ bookedDetail()!.email }}</span>
+                    </div>
+                    <div class="na-success__row">
+                        <span class="material-icons-round">calendar_today</span>
+                        <span>{{ formatDateDisplay(bookedDetail()!.date) }}</span>
+                    </div>
+                    <div class="na-success__row">
+                        <span class="material-icons-round">schedule</span>
+                        <span>{{ formatTimeDisplay(bookedDetail()!.time) }}</span>
+                    </div>
+                    @if (bookedDetail()!.notes) {
+                        <div class="na-success__row na-success__row--notes">
+                            <span class="material-icons-round">notes</span>
+                            <span>{{ bookedDetail()!.notes }}</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="na-modal__actions">
+                    <button type="button" class="btn btn-primary" (click)="done()">
+                        <span class="material-icons-round" style="font-size:18px">check</span>
+                        Done
+                    </button>
+                </div>
+            </div>
+
+        } @else {
+
+            @if (error()) {
+                <div class="na-error">
+                    <span class="material-icons-round">error_outline</span>
+                    {{ error() }}
+                </div>
+            }
+
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="na-form">
+
+                <div class="field" [class.field--error]="email.invalid && email.touched">
+                    <label class="field__label" for="na-email">Patient email <span class="field__req">*</span></label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">mail_outline</span>
+                        <input id="na-email" type="email" class="field__input"
+                            placeholder="patient@email.com" formControlName="email" autocomplete="off" />
+                    </div>
+                    @if (email.invalid && email.touched) {
+                        <span class="field__error">
+                            @if (email.errors?.['required']) { Patient email is required. }
+                            @else { Enter a valid email address. }
+                        </span>
+                    }
+                </div>
+
+                <div class="picker-row">
+                    <div class="picker-col" [class.picker-col--error]="appointmentDate.invalid && appointmentDate.touched">
+                        <div class="picker-col__label">
+                            Date <span class="field__req">*</span>
+                            @if (appointmentDate.value) {
+                                <span class="picker-col__selected">{{ appointmentDate.value }}</span>
+                            }
+                        </div>
+                        <app-date-picker
+                            [value]="appointmentDate.value ?? ''"
+                            [minDate]="minDate"
+                            (valueChange)="onDateSelected($event)"
+                        />
+                        @if (appointmentDate.invalid && appointmentDate.touched) {
+                            <span class="field__error">
+                                @if (appointmentDate.errors?.['required']) { Date is required. }
+                                @else { Appointment date must be today or in the future. }
+                            </span>
+                        }
+                    </div>
+
+                    <div class="picker-col" [class.picker-col--error]="appointmentTime.invalid && appointmentTime.touched">
+                        <div class="picker-col__label">
+                            Time <span class="field__req">*</span>
+                            @if (appointmentTime.value) {
+                                <span class="picker-col__selected">{{ appointmentTime.value }}</span>
+                            }
+                            @if (isSlotsLoading()) {
+                                <span class="slots-hint">
+                                    <span class="slots-spinner"></span> Loading availability…
+                                </span>
+                            } @else if (slotsError()) {
+                                <span class="slots-hint slots-hint--error">Could not load availability</span>
+                            } @else if (!selectedDate()) {
+                                <span class="slots-hint">Select a date first</span>
+                            }
+                        </div>
+                        <app-time-picker
+                            [value]="appointmentTime.value ?? ''"
+                            [disabledSlots]="disabledSlots()"
+                            (valueChange)="appointmentTime.setValue($event); appointmentTime.markAsTouched()"
+                        />
+                        @if (appointmentTime.invalid && appointmentTime.touched) {
+                            <span class="field__error">Time is required.</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="field__label" for="na-notes">Notes</label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round" style="top: 13px; align-self: flex-start;">notes</span>
+                        <textarea id="na-notes" class="field__input field__textarea"
+                            placeholder="Reason for visit, special instructions…"
+                            formControlName="notes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="na-modal__actions">
+                    <button type="button" class="btn btn-outline" (click)="dismiss()" [disabled]="isLoading()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="isLoading()">
+                        @if (isLoading()) {
+                            <span class="spinner"></span>
+                            Saving…
+                        } @else {
+                            <span class="material-icons-round" style="font-size:18px">event_available</span>
+                            Book Appointment
+                        }
+                    </button>
+                </div>
+
+            </form>
+
+        }
+    </div>
+</div>

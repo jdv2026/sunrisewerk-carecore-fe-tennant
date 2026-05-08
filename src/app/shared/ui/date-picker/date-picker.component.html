@@ -1,0 +1,32 @@
+<div class="dp">
+    <div class="dp__nav">
+        <button type="button" class="dp__nav-btn" (click)="prevMonth()">
+            <span class="material-icons-round">chevron_left</span>
+        </button>
+        <span class="dp__month-label">{{ monthLabel }}</span>
+        <button type="button" class="dp__nav-btn" (click)="nextMonth()">
+            <span class="material-icons-round">chevron_right</span>
+        </button>
+    </div>
+
+    <div class="dp__grid">
+        @for (h of dayHeaders; track h) {
+            <span class="dp__day-header">{{ h }}</span>
+        }
+        @for (day of days(); track $index) {
+            @if (day.isPadding) {
+                <span class="dp__cell dp__cell--padding"></span>
+            } @else {
+                <button
+                    type="button"
+                    class="dp__cell"
+                    [class.dp__cell--today]="day.isToday"
+                    [class.dp__cell--selected]="day.isSelected"
+                    [class.dp__cell--disabled]="day.disabled"
+                    [disabled]="day.disabled"
+                    (click)="select(day)"
+                >{{ day.day }}</button>
+            }
+        }
+    </div>
+</div>

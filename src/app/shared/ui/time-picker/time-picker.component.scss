@@ -1,0 +1,47 @@
+.tp {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--white);
+    max-height: 200px;
+    overflow-y: auto;
+
+    &__slot {
+        padding: 7px 4px;
+        border-radius: 6px;
+        border: 1.5px solid var(--border);
+        background: var(--surface);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+        text-align: center;
+        cursor: pointer;
+        transition: background 0.1s, color 0.1s, border-color 0.1s;
+        white-space: nowrap;
+
+        &:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        &--selected {
+            background: var(--primary) !important;
+            color: #fff !important;
+            border-color: var(--primary) !important;
+            font-weight: 700;
+        }
+
+        &--disabled, &:disabled {
+            background: var(--surface) !important;
+            color: #cbd5e1 !important;
+            border-color: #e2e8f0 !important;
+            cursor: not-allowed !important;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+    }
+}

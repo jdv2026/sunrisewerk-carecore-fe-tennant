@@ -1,0 +1,116 @@
+<div class="page-layout">
+
+    <app-sidebar [open]="sidebarOpen()" (closeRequest)="sidebarOpen.set(false)" />
+
+    <div class="page-main">
+
+        <header class="topbar">
+            <div class="topbar__left">
+                <button class="hamburger" (click)="sidebarOpen.set(!sidebarOpen())">
+                    <span class="material-icons-round">menu</span>
+                </button>
+                <h1 class="topbar__title">Staff</h1>
+            </div>
+        </header>
+
+        <main class="page-content">
+
+            <!-- Stats -->
+            <div class="staff-stats">
+                <div class="s-stat s-stat--blue">
+                    <div class="s-stat__icon"><span class="material-icons-round">group</span></div>
+                    <div class="s-stat__value">{{ totalCount() }}</div>
+                    <div class="s-stat__label">Total Staff</div>
+                </div>
+                <div class="s-stat s-stat--indigo">
+                    <div class="s-stat__icon"><span class="material-icons-round">medical_services</span></div>
+                    <div class="s-stat__value">{{ doctorCount() }}</div>
+                    <div class="s-stat__label">Doctors</div>
+                </div>
+                <div class="s-stat s-stat--green">
+                    <div class="s-stat__icon"><span class="material-icons-round">vaccines</span></div>
+                    <div class="s-stat__value">{{ nurseCount() }}</div>
+                    <div class="s-stat__label">Nurses</div>
+                </div>
+                <div class="s-stat s-stat--purple">
+                    <div class="s-stat__icon"><span class="material-icons-round">support_agent</span></div>
+                    <div class="s-stat__value">{{ supportCount() }}</div>
+                    <div class="s-stat__label">Support</div>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="filter-tabs">
+                    @for (f of filters; track f.value) {
+                        <button class="filter-tab" [class.filter-tab--active]="activeFilter() === f.value"
+                            (click)="activeFilter.set(f.value)">{{ f.label }}</button>
+                    }
+                </div>
+                <div class="search-wrap">
+                    <span class="material-icons-round search-wrap__icon">search</span>
+                    <input class="search-wrap__input" type="text" placeholder="Search name, specialty…"
+                        [value]="search()" (input)="search.set($any($event.target).value)" />
+                </div>
+            </div>
+
+            <!-- Loading -->
+            @if (isLoading()) {
+                <div class="page-loading">
+                    <span class="page-spinner"></span>
+                    <p>Loading…</p>
+                </div>
+            } @else if (filtered().length === 0) {
+                <div class="empty-state">
+                    <span class="material-icons-round empty-state__icon">person_search</span>
+                    <p>No staff members found.</p>
+                </div>
+            } @else {
+                <div class="staff-grid">
+                    @for (member of filtered(); track member.id) {
+                        <div class="staff-card">
+                            <div class="staff-card__top">
+                                <div class="staff-avatar staff-avatar--{{ roleColors[member.role] }}">
+                                    {{ initials(member) }}
+                                </div>
+                                <span class="status-badge status-badge--{{ member.status }}">
+                                    {{ statusLabel[member.status] ?? member.status }}
+                                </span>
+                            </div>
+                            <div class="staff-card__body">
+                                <a class="staff-name staff-name--link" [routerLink]="['/staff', member.id]">{{ fullName(member) }}</a>
+                                <div class="staff-role">{{ roleLabel[member.role] }}</div>
+                                @if (member.specialty) {
+                                    <span class="staff-specialty">{{ member.specialty }}</span>
+                                }
+                                @if (member.schedules && member.schedules.length > 0) {
+                                    <div class="staff-schedule-section">
+                                        <span class="staff-schedule-label">Schedule</span>
+                                        <div class="staff-schedules">
+                                            @for (sched of member.schedules; track $index) {
+                                                <span class="staff-day-pill">{{ formatDay(sched.day) }}</span>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="staff-card__footer">
+                                <div class="staff-contact">
+                                    <span class="material-icons-round">mail_outline</span>
+                                    {{ member.email }}
+                                </div>
+                                @if (member.number) {
+                                    <div class="staff-contact">
+                                        <span class="material-icons-round">phone</span>
+                                        {{ member.number }}
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+        </main>
+    </div>
+</div>

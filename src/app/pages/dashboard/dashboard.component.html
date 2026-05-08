@@ -1,0 +1,282 @@
+@if (showAddPatient()) {
+    <app-add-patient-modal
+        (saved)="onPatientSaved()"
+        (cancelled)="showAddPatient.set(false)"
+    />
+}
+
+@if (showNewAppointment()) {
+    <app-new-appointment-modal
+        (saved)="onAppointmentSaved()"
+        (cancelled)="showNewAppointment.set(false)"
+    />
+}
+
+@if (showAddStaff()) {
+    <app-add-staff-modal
+        (saved)="onStaffSaved()"
+        (cancelled)="showAddStaff.set(false)"
+    />
+}
+
+<div class="page-layout">
+
+    <app-sidebar [open]="sidebarOpen()" (closeRequest)="sidebarOpen.set(false)" />
+
+    <div class="page-main">
+
+        <header class="topbar">
+            <div class="topbar__left">
+                <button class="hamburger" (click)="sidebarOpen.set(!sidebarOpen())">
+                    <span class="material-icons-round">menu</span>
+                </button>
+                <h1 class="topbar__title">Dashboard</h1>
+            </div>
+            <div class="topbar__right">
+                <span class="topbar__date">
+                    <span class="material-icons-round">calendar_today</span>
+                    {{ today }}
+                </span>
+            </div>
+        </header>
+
+        <main class="page-content">
+
+            @if (isLoading()) {
+                <div class="page-loading">
+                    <span class="page-spinner"></span>
+                    <p>Loading…</p>
+                </div>
+            } @else {
+
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-card stat-card--primary">
+                    <div class="stat-card__icon">
+                        <span class="material-icons-round">calendar_today</span>
+                    </div>
+                    <div class="stat-card__body">
+                        <div class="stat-card__value">{{ stats()?.todays_appointments ?? '—' }}</div>
+                        <div class="stat-card__label">Today's Appointments</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-card--accent">
+                    <div class="stat-card__icon">
+                        <span class="material-icons-round">people</span>
+                    </div>
+                    <div class="stat-card__body">
+                        <div class="stat-card__value">{{ stats()?.total_patients ?? '—' }}</div>
+                        <div class="stat-card__label">Total Patients</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-card--secondary">
+                    <div class="stat-card__icon">
+                        <span class="material-icons-round">medical_services</span>
+                    </div>
+                    <div class="stat-card__body">
+                        <div class="stat-card__value">{{ stats()?.active_staffs ?? '—' }}</div>
+                        <div class="stat-card__label">Active Staff</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Staff Leaves -->
+            <div class="card leave-card">
+                <div class="card__header">
+                    <span class="material-icons-round">event_busy</span>
+                    Upcoming Staff Leaves
+                    <span class="leave-card__range">Today – 4 weeks</span>
+                </div>
+
+                @if (isLoadingLeaves()) {
+                    <div class="leave-loading">
+                        <span class="leave-spinner"></span>
+                    </div>
+                } @else if (leavesError()) {
+                    <div class="empty-state">
+                        <span class="material-icons-round empty-state__icon" style="color:#ef4444">error_outline</span>
+                        <p class="empty-state__text">Could not load leave records.</p>
+                    </div>
+                } @else if (upcomingLeaves().length === 0) {
+                    <div class="empty-state">
+                        <span class="material-icons-round empty-state__icon">beach_access</span>
+                        <p class="empty-state__text">No staff leaves in the next 4 weeks.</p>
+                    </div>
+                } @else {
+                    <div class="leave-list">
+                        @for (leave of upcomingLeaves(); track leave.id) {
+                            <div class="leave-item">
+                                <div class="leave-avatar">{{ staffInitials(leave) }}</div>
+                                <div class="leave-info">
+                                    <div class="leave-name">{{ staffName(leave) }}</div>
+                                    <div class="leave-meta">
+                                        <span class="material-icons-round">date_range</span>
+                                        {{ formatLeaveDate(leave.start_date) }} – {{ formatLeaveDate(leave.end_date) }}
+                                    </div>
+                                    @if (leave.reason) {
+                                        <div class="leave-reason">{{ leave.reason }}</div>
+                                    }
+                                </div>
+                                <div class="leave-badges">
+                                    <span class="leave-type-badge">{{ leaveTypeLabel[leave.type] ?? leave.type }}</span>
+                                    @if (leave.status === 'pending') {
+                                        <div class="leave-actions">
+                                            <button
+                                                class="leave-action-btn leave-action-btn--approve"
+                                                [disabled]="actioningLeave() !== null"
+                                                (click)="approveLeave(leave)">
+                                                @if (actioningLeave()?.id === leave.id && actioningLeave()?.action === 'approve') {
+                                                    <span class="leave-action-spinner"></span>
+                                                } @else {
+                                                    <span class="material-icons-round">check</span>
+                                                }
+                                                Approve
+                                            </button>
+                                            <button
+                                                class="leave-action-btn leave-action-btn--reject"
+                                                [disabled]="actioningLeave() !== null"
+                                                (click)="rejectLeave(leave)">
+                                                @if (actioningLeave()?.id === leave.id && actioningLeave()?.action === 'reject') {
+                                                    <span class="leave-action-spinner"></span>
+                                                } @else {
+                                                    <span class="material-icons-round">close</span>
+                                                }
+                                                Reject
+                                            </button>
+                                        </div>
+                                    } @else {
+                                        <span class="leave-status-badge leave-status-badge--{{ leave.status }}">
+                                            {{ leaveStatusLabel[leave.status] ?? leave.status }}
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    @if (leaveActionError()) {
+                        <div class="leave-action-error">
+                            <span class="material-icons-round">error_outline</span>
+                            {{ leaveActionError() }}
+                        </div>
+                    }
+                }
+            </div>
+
+            <div class="dash-grid">
+
+                <!-- Latest Confirmed Appointments -->
+                <div class="card">
+                    <div class="card__header">
+                        <span class="material-icons-round">calendar_month</span>
+                        Latest Confirmed Appointments
+                    </div>
+
+                    @if (appointments().length === 0) {
+                        <div class="empty-state">
+                            <span class="material-icons-round empty-state__icon">event_available</span>
+                            <p class="empty-state__text">No appointments scheduled yet.</p>
+                        </div>
+                    } @else {
+                        <div class="appt-list">
+                            @for (appt of appointments(); track appt.id) {
+                                <div class="appt-item">
+                                    <div class="appt-avatar">{{ initials(appt) }}</div>
+                                    <div class="appt-info">
+                                        <div class="appt-name">{{ patientName(appt) }}</div>
+                                        <div class="appt-meta">
+                                            <span class="material-icons-round">schedule</span>
+                                            {{ formatDate(appt.appointment_date) }} · {{ formatTime(appt.appointment_time) }}
+                                        </div>
+                                        @if (appt.notes) {
+                                            <div class="appt-notes">{{ appt.notes }}</div>
+                                        }
+                                    </div>
+                                    <span class="status-badge status-badge--{{ appt.status }}">
+                                        {{ statusLabel[appt.status] ?? appt.status }}
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="dash-col">
+
+                    <!-- Clinic Info -->
+                    <div class="card">
+                        <div class="card__header">
+                            <span class="material-icons-round">local_hospital</span>
+                            Clinic Info
+                        </div>
+                        @if (clinic()) {
+                            <ul class="info-list">
+                                <li class="info-row">
+                                    <span class="info-row__label">Clinic</span>
+                                    <span class="info-row__value">{{ clinic()!.name }}</span>
+                                </li>
+                                @if (clinic()!.specialties) {
+                                    <li class="info-row">
+                                        <span class="info-row__label">Specialties</span>
+                                        <span class="info-row__value info-row__value--tags">
+                                            @for (s of clinic()!.specialties.split(','); track s) {
+                                                <span class="pill">{{ s.trim() }}</span>
+                                            }
+                                        </span>
+                                    </li>
+                                }
+                                @if (clinicLocation()) {
+                                    <li class="info-row">
+                                        <span class="info-row__label">Location</span>
+                                        <span class="info-row__value">{{ clinicLocation() }}</span>
+                                    </li>
+                                }
+                                @if (clinic()!.phone) {
+                                    <li class="info-row">
+                                        <span class="info-row__label">Phone</span>
+                                        <span class="info-row__value">{{ clinic()!.phone }}</span>
+                                    </li>
+                                }
+                                @if (clinic()!.email) {
+                                    <li class="info-row">
+                                        <span class="info-row__label">Email</span>
+                                        <span class="info-row__value">{{ clinic()!.email }}</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card__header">
+                            <span class="material-icons-round">bolt</span>
+                            Quick Actions
+                        </div>
+                        <div class="quick-actions">
+                            <button class="quick-action quick-action--active" (click)="showAddPatient.set(true)">
+                                <span class="material-icons-round">person_add</span>
+                                Add Patient
+                            </button>
+                            <button class="quick-action quick-action--active" (click)="showNewAppointment.set(true)">
+                                <span class="material-icons-round">event</span>
+                                New Appointment
+                            </button>
+                            <button class="quick-action quick-action--active" (click)="showAddStaff.set(true)">
+                                <span class="material-icons-round">group_add</span>
+                                Add Staff
+                            </button>
+                            <button class="quick-action" disabled>
+                                <span class="material-icons-round">summarize</span>
+                                View Reports
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            }
+
+        </main>
+    </div>
+</div>

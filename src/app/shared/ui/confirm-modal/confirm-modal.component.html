@@ -1,0 +1,17 @@
+<div class="modal-backdrop" (click)="cancel()">
+    <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <div class="modal__icon" [class.modal__icon--danger]="iconColor() === 'danger'">
+            <span class="material-icons-round">{{ icon() }}</span>
+        </div>
+        <h2 class="modal__title">{{ title() }}</h2>
+        <p class="modal__body">{{ body() }}</p>
+        <div class="modal__actions">
+            <button class="btn btn-outline modal__cancel" (click)="cancel()">
+                {{ cancelLabel() }}
+            </button>
+            <button class="btn modal__confirm" [class.btn-danger]="iconColor() === 'danger'" [class.btn-primary]="iconColor() !== 'danger'" (click)="confirm()">
+                {{ confirmLabel() }}
+            </button>
+        </div>
+    </div>
+</div>

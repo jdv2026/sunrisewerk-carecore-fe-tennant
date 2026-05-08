@@ -1,0 +1,94 @@
+.dp {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--white);
+    user-select: none;
+
+    &__nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+    }
+
+    &__month-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--dark);
+    }
+
+    &__nav-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 1.5px solid var(--border);
+        background: var(--white);
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s, color 0.15s;
+
+        .material-icons-round { font-size: 18px; }
+        &:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 3px;
+        padding: 10px;
+    }
+
+    &__day-header {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        text-align: center;
+        padding-bottom: 4px;
+    }
+
+    &__cell {
+        aspect-ratio: 1;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--dark);
+        background: transparent;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.1s, color 0.1s;
+
+        &:hover:not(:disabled) {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        &--today {
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        &--selected {
+            background: var(--primary) !important;
+            color: #fff !important;
+            font-weight: 700;
+        }
+
+        &--disabled {
+            color: var(--border);
+            cursor: default;
+        }
+
+        &--padding {
+            pointer-events: none;
+        }
+    }
+}

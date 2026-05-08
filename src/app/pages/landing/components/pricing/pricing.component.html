@@ -1,0 +1,68 @@
+<section class="section pricing" id="pricing">
+    <div class="container">
+        <div class="text-center">
+            <div class="tag">
+                <span class="material-icons-round" style="font-size: 14px">sell</span>
+                Transparent Pricing
+            </div>
+            <h2 class="section-title">Plans for Every Practice</h2>
+            <p class="section-subtitle">Start free for 3 months. No credit card required. Cancel anytime.</p>
+        </div>
+
+        <div class="pricing__toggle">
+            <span [class.active]="!yearly()">Monthly</span>
+            <button class="toggle-switch" (click)="yearly.set(!yearly())" [class.on]="yearly()">
+                <span class="toggle-thumb"></span>
+            </button>
+            <span [class.active]="yearly()">
+                Yearly
+                <span class="save-badge">Save 20%</span>
+            </span>
+        </div>
+
+        <div class="pricing__grid">
+            @for (plan of plans; track plan.name) {
+                <div class="pricing-card" [class.highlighted]="plan.highlighted">
+                    @if (plan.badge) {
+                        <div class="pricing-card__badge">{{ plan.badge }}</div>
+                    }
+                    <div class="pricing-card__header">
+                        <h3 class="pricing-card__name">{{ plan.name }}</h3>
+                        <p class="pricing-card__desc">{{ plan.desc }}</p>
+                    </div>
+                    <div class="pricing-card__price">
+                        <span class="pricing-card__currency">$</span>
+                        <span class="pricing-card__amount">{{ yearly() ? plan.yearlyPrice : plan.monthlyPrice }}</span>
+                        <span class="pricing-card__period">/mo</span>
+                    </div>
+                    @if (yearly()) {
+                        <div class="pricing-card__billed">Billed annually</div>
+                    }
+                    <ul class="pricing-card__features">
+                        @for (feature of plan.features; track feature) {
+                            <li>
+                                <span class="material-icons-round check">check_circle</span>
+                                {{ feature }}
+                            </li>
+                        }
+                    </ul>
+                    @if (plan.salesContact) {
+                        <div class="pricing-card__sales">
+                            <span>Contact sales for more info</span>
+                            <a [href]="plan.ctaLink">sales&#64;sunrisewerk.com</a>
+                        </div>
+                    } @else {
+                        <a
+                            [href]="plan.ctaLink"
+                            class="btn btn-lg"
+                            [class.btn-primary]="plan.highlighted"
+                            [class.btn-outline]="!plan.highlighted"
+                        >
+                            {{ plan.cta }}
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</section>

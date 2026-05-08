@@ -1,0 +1,654 @@
+@if (showSubmitModal()) {
+    <app-confirm-modal
+        icon="check_circle"
+        title="Are you sure?"
+        body="Please make sure all details are correct. Once submitted, your information cannot be updated."
+        confirmLabel="Yes, submit"
+        cancelLabel="Go back"
+        (confirmed)="confirmSubmit()"
+        (cancelled)="showSubmitModal.set(false)"
+    />
+}
+
+@if (showErrorModal()) {
+    <app-confirm-modal
+        icon="error"
+        iconColor="danger"
+        title="Something went wrong"
+        [body]="errorMessage() ?? 'Your submission failed. Please try again later.'"
+        confirmLabel="OK"
+        cancelLabel="Dismiss"
+        (confirmed)="showErrorModal.set(false)"
+        (cancelled)="showErrorModal.set(false)"
+    />
+}
+
+@if (showLogoutModal()) {
+    <app-confirm-modal
+        icon="logout"
+        iconColor="danger"
+        title="Sign out?"
+        body="You'll need to sign in again to continue your onboarding."
+        confirmLabel="Sign out"
+        cancelLabel="Stay"
+        (confirmed)="confirmLogout()"
+        (cancelled)="cancelLogout()"
+    />
+}
+
+@if (isFetching()) {
+    <div class="ob-fullscreen-loading">
+        <div class="ob-fullscreen-loading__card">
+            <span class="ob-brand__icon" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;margin-bottom:20px">
+                <span class="material-icons-round" style="color:#fff;font-size:24px">favorite</span>
+            </span>
+            <span class="spinner spinner--lg"></span>
+            <p class="ob-fullscreen-loading__text">Loading your details…</p>
+        </div>
+    </div>
+}
+
+<div class="onboarding" [class.onboarding--hidden]="isFetching()">
+
+    <!-- Sidebar -->
+    <aside class="onboarding__sidebar">
+        <a href="/" class="ob-brand">
+            <span class="ob-brand__icon">
+                <span class="material-icons-round">favorite</span>
+            </span>
+            <span>Care<strong>Core</strong></span>
+        </a>
+
+        <ul class="ob-steps">
+            @for (step of steps; track step.number) {
+                <li class="ob-step" [class.active]="currentStep() === step.number" [class.done]="currentStep() > step.number">
+                    <div class="ob-step__dot">
+                        @if (currentStep() > step.number) {
+                            <span class="material-icons-round">check</span>
+                        } @else {
+                            <span class="material-icons-round">{{ step.icon }}</span>
+                        }
+                    </div>
+                    <div class="ob-step__info">
+                        <div class="ob-step__num">Step {{ step.number }}</div>
+                        <div class="ob-step__label">{{ step.label }}</div>
+                    </div>
+                </li>
+            }
+        </ul>
+
+        <div class="ob-sidebar__footer">
+            <div class="ob-progress">
+                <div class="ob-progress__bar">
+                    <div class="ob-progress__fill" [style.width.%]="progress()"></div>
+                </div>
+                <span>{{ progress() }}% complete</span>
+            </div>
+            <button type="button" class="ob-logout" (click)="logout()">
+                <span class="material-icons-round">logout</span>
+                Sign out
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="onboarding__main">
+
+        <!-- Mobile-only top bar -->
+        <div class="ob-mobile-bar">
+            <a href="/" class="ob-mobile-brand">
+                <span class="ob-brand__icon"><span class="material-icons-round">favorite</span></span>
+                <span>Care<strong>Core</strong></span>
+            </a>
+            <div class="ob-mobile-step">
+                <span class="material-icons-round">{{ steps[currentStep() - 1].icon }}</span>
+                Step {{ currentStep() }} of {{ steps.length }}
+            </div>
+            <div class="ob-mobile-progress">
+                <div class="ob-mobile-progress__fill" [style.width.%]="progress()"></div>
+            </div>
+        </div>
+
+        <div class="ob-content">
+
+            @if (!isFetching()) {
+
+            @if (isLoading()) {
+                <div class="ob-submit-loading">
+                    <span class="spinner spinner--lg"></span>
+                    <p class="ob-submit-loading__text">Submitting your details…</p>
+                </div>
+            }
+
+            <!-- Step 1 — Your Profile -->
+            @if (currentStep() === 1) {
+                <div class="ob-step-header">
+                    <div class="ob-step-icon">
+                        <span class="material-icons-round">person</span>
+                    </div>
+                    <h1 class="ob-title">Tell us about yourself</h1>
+                    <p class="ob-subtitle">This helps personalize your CareCore experience.</p>
+                </div>
+
+                <form [formGroup]="profileForm" novalidate>
+                    <div class="field-row">
+                        <div class="field field--disabled">
+                            <label class="field__label">First name</label>
+                            <div class="field__input-wrap">
+                                <span class="field__icon material-icons-round">person_outline</span>
+                                <input type="text" class="field__input" placeholder="Juan" formControlName="firstName" />
+                            </div>
+                            @if (profileForm.get('firstName')!.invalid && profileForm.get('firstName')!.touched) {
+                                <span class="field__error">
+                                    @if (profileForm.get('firstName')!.errors?.['required']) { Required. }
+                                    @else if (profileForm.get('firstName')!.errors?.['minlength']) { Min. 2 characters. }
+                                    @else if (profileForm.get('firstName')!.errors?.['maxlength']) { Max. 45 characters. }
+                                    @else if (profileForm.get('firstName')!.errors?.['pattern']) { Letters only. }
+                                </span>
+                            }
+                        </div>
+                        <div class="field field--disabled">
+                            <label class="field__label">Last name</label>
+                            <div class="field__input-wrap">
+                                <span class="field__icon material-icons-round">person_outline</span>
+                                <input type="text" class="field__input" placeholder="dela Cruz" formControlName="lastName" />
+                            </div>
+                            @if (profileForm.get('lastName')!.invalid && profileForm.get('lastName')!.touched) {
+                                <span class="field__error">
+                                    @if (profileForm.get('lastName')!.errors?.['required']) { Required. }
+                                    @else if (profileForm.get('lastName')!.errors?.['minlength']) { Min. 2 characters. }
+                                    @else if (profileForm.get('lastName')!.errors?.['maxlength']) { Max. 45 characters. }
+                                    @else if (profileForm.get('lastName')!.errors?.['pattern']) { Letters only. }
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="field" [class.field--error]="profileForm.get('role')!.invalid && profileForm.get('role')!.touched">
+                        <label class="field__label">Your role</label>
+                        <div class="field__input-wrap field__input-wrap--select">
+                            <span class="field__icon material-icons-round">badge</span>
+                            <select class="field__input field__select" formControlName="role">
+                                <option value="" disabled>Select your role</option>
+                                <option>Clinic Owner</option>
+                                <option>Doctor / Physician</option>
+                                <option>Practice Manager</option>
+                                <option>Receptionist</option>
+                                <option>Nurse</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        @if (profileForm.get('role')!.invalid && profileForm.get('role')!.touched) {
+                            <span class="field__error">Please select your role.</span>
+                        }
+                    </div>
+
+                    @if (profileForm.get('role')?.value === 'Other') {
+                        <div class="field" [class.field--error]="roleOtherTouched() && (roleOther().trim().length < 3 || roleOther().trim().length > 25)">
+                            <label class="field__label">Please specify your role</label>
+                            <div class="field__input-wrap">
+                                <span class="field__icon material-icons-round">edit</span>
+                                <input
+                                    type="text"
+                                    class="field__input"
+                                    placeholder="e.g. Lab Technician"
+                                    [value]="roleOther()"
+                                    (input)="roleOther.set($any($event.target).value)"
+                                    maxlength="25"
+                                />
+                            </div>
+                            @if (roleOtherTouched()) {
+                                @if (roleOther().trim().length === 0) {
+                                    <span class="field__error">Please specify your role.</span>
+                                } @else if (roleOther().trim().length < 3) {
+                                    <span class="field__error">Min. 3 characters.</span>
+                                }
+                            }
+                            <span class="field__hint" [class.field__hint--danger]="roleOther().trim().length === 25">
+                                {{ roleOther().trim().length }} / 25
+                            </span>
+                        </div>
+                    }
+
+                    <div class="field" [class.field--error]="profileForm.get('phone')!.invalid && profileForm.get('phone')!.touched">
+                        <label class="field__label">Phone number</label>
+                        <div class="phone-input-wrap">
+                            <div class="phone-prefix">
+                                <select
+                                    class="phone-prefix__select"
+                                    [value]="phonePrefix()"
+                                    (change)="phonePrefix.set($any($event.target).value)"
+                                >
+                                    @for (p of phonePrefixes; track p.name) {
+                                        <option [value]="p.code">{{ p.name }} ({{ p.code }})</option>
+                                    }
+                                </select>
+                                <span class="phone-prefix__value">{{ phonePrefix() }}</span>
+                                <span class="material-icons-round phone-prefix__arrow">expand_more</span>
+                            </div>
+                            <div class="field__input-wrap" style="flex:1">
+                                <span class="field__icon material-icons-round">phone</span>
+                                <input type="tel" class="field__input" placeholder="912 345 6789" formControlName="phone" />
+                            </div>
+                        </div>
+                        @if (profileForm.get('phone')!.invalid && profileForm.get('phone')!.touched) {
+                            <span class="field__error">
+                                @if (profileForm.get('phone')!.errors?.['required']) { Phone number is required. }
+                                @else { Enter a valid phone number. }
+                            </span>
+                        }
+                    </div>
+                </form>
+            }
+
+            <!-- Step 2 — Clinic Details -->
+            @if (currentStep() === 2) {
+                <div class="ob-step-header">
+                    <div class="ob-step-icon">
+                        <span class="material-icons-round">local_hospital</span>
+                    </div>
+                    <h1 class="ob-title">Set up your clinic</h1>
+                    <p class="ob-subtitle">Tell us about the clinic you're managing.</p>
+                </div>
+
+                <form [formGroup]="clinicForm" novalidate>
+                    <div class="field" [class.field--error]="clinicForm.get('clinicName')!.invalid && clinicForm.get('clinicName')!.touched">
+                        <label class="field__label">Clinic name</label>
+                        <div class="field__input-wrap">
+                            <span class="field__icon material-icons-round">local_hospital</span>
+                            <input type="text" class="field__input" placeholder="MedPlus Clinic" formControlName="clinicName" />
+                        </div>
+                        @if (clinicForm.get('clinicName')!.invalid && clinicForm.get('clinicName')!.touched) {
+                            <span class="field__error">
+                                @if (clinicForm.get('clinicName')!.errors?.['required']) { Clinic name is required. }
+                                @else if (clinicForm.get('clinicName')!.errors?.['minlength']) { Min. 2 characters. }
+                                @else if (clinicForm.get('clinicName')!.errors?.['maxlength']) { Max. 100 characters. }
+                            </span>
+                        }
+                    </div>
+
+                    <div class="field" [class.field--error]="specialtyTouched() && selectedSpecialties().length === 0">
+                        <label class="field__label">Specialties</label>
+                        <div class="specialty-add">
+                            <div class="field__input-wrap field__input-wrap--select" style="flex:1">
+                                <span class="field__icon material-icons-round">medical_services</span>
+                                <select
+                                    class="field__input field__select"
+                                    [value]="specialtyDraft()"
+                                    (change)="specialtyDraft.set($any($event.target).value); specialtyCustom.set('')"
+                                >
+                                    <option value="" disabled>Select specialty</option>
+                                    @for (s of availableSpecialties; track s) {
+                                        <option>{{ s }}</option>
+                                    }
+                                </select>
+                            </div>
+                            <button
+                                type="button"
+                                class="specialty-add__btn"
+                                (click)="addSpecialty()"
+                                [disabled]="specialtyDraft() === 'Other' ? !specialtyCustom().trim() : !specialtyDraft()"
+                            >
+                                <span class="material-icons-round">add</span>
+                                Add
+                            </button>
+                        </div>
+                        @if (specialtyDraft() === 'Other') {
+                            <div class="field__input-wrap" style="margin-top:10px">
+                                <span class="field__icon material-icons-round">edit</span>
+                                <input
+                                    type="text"
+                                    class="field__input"
+                                    placeholder="Type your specialty..."
+                                    [value]="specialtyCustom()"
+                                    (input)="specialtyCustom.set($any($event.target).value)"
+                                    (keydown.enter)="$event.preventDefault(); addSpecialty()"
+                                    maxlength="60"
+                                />
+                            </div>
+                        }
+
+                        @if (selectedSpecialties().length > 0) {
+                            <div class="specialty-tags">
+                                @for (s of selectedSpecialties(); track s) {
+                                    <span class="specialty-tag">
+                                        {{ s }}
+                                        <button type="button" class="specialty-tag__remove" (click)="removeSpecialty(s)">
+                                            <span class="material-icons-round">close</span>
+                                        </button>
+                                    </span>
+                                }
+                            </div>
+                        }
+
+                        <div class="field__hint" [class.field__hint--danger]="specialtiesAtLimit()">
+                            {{ specialtiesCharCount() }} / 500 characters used
+                            @if (specialtiesAtLimit()) { — limit reached, remove a specialty to add another. }
+                        </div>
+
+                        @if (specialtyTouched() && selectedSpecialties().length === 0) {
+                            <span class="field__error">Please add at least one specialty.</span>
+                        }
+                    </div>
+
+                    <div class="field" [class.field--error]="clinicForm.get('country')!.invalid && clinicForm.get('country')!.touched">
+                        <label class="field__label">Country</label>
+                        <div class="field__input-wrap field__input-wrap--select">
+                            <span class="field__icon material-icons-round">public</span>
+                            <select class="field__input field__select" formControlName="country">
+                                <option value="" disabled>Select country</option>
+                                @for (c of countries; track c) {
+                                    <option>{{ c }}</option>
+                                }
+                            </select>
+                        </div>
+                        @if (clinicForm.get('country')!.invalid && clinicForm.get('country')!.touched) {
+                            <span class="field__error">Country is required.</span>
+                        }
+                    </div>
+
+                    <div class="field">
+                        <label class="field__label">Province / State</label>
+                        <div class="field__input-wrap field__input-wrap--select">
+                            <span class="field__icon material-icons-round">map</span>
+                            @if (provincesLoading()) {
+                                <select class="field__input field__select" disabled>
+                                    <option>Loading…</option>
+                                </select>
+                            } @else {
+                                <select class="field__input field__select" formControlName="province"
+                                    [attr.disabled]="!clinicForm.get('country')?.value || null">
+                                    <option value="">
+                                        {{ clinicForm.get('country')?.value ? 'Select province / state' : 'Select a country first' }}
+                                    </option>
+                                    @for (p of provinces(); track p) {
+                                        <option>{{ p }}</option>
+                                    }
+                                </select>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="field__label">City / District</label>
+                        <div class="field__input-wrap field__input-wrap--select">
+                            <span class="field__icon material-icons-round">location_city</span>
+                            @if (citiesLoading()) {
+                                <select class="field__input field__select" disabled>
+                                    <option>Loading…</option>
+                                </select>
+                            } @else {
+                                <select class="field__input field__select" formControlName="city"
+                                    [attr.disabled]="!clinicForm.get('province')?.value || null">
+                                    <option value="">
+                                        {{ clinicForm.get('province')?.value ? 'Select city / district' : 'Select a province first' }}
+                                    </option>
+                                    @for (c of cities(); track c) {
+                                        <option>{{ c }}</option>
+                                    }
+                                </select>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="field" [class.field--error]="clinicForm.get('street')!.invalid && clinicForm.get('street')!.touched">
+                        <label class="field__label">Street address</label>
+                        <div class="field__input-wrap">
+                            <span class="field__icon material-icons-round">location_on</span>
+                            <input type="text" class="field__input" placeholder="123 Rizal Ave." formControlName="street" maxlength="100" />
+                        </div>
+                        @if (clinicForm.get('street')!.invalid && clinicForm.get('street')!.touched) {
+                            <span class="field__error">Max 100 characters.</span>
+                        }
+                        <span class="field__hint" [class.field__hint--danger]="(clinicForm.get('street')!.value?.length ?? 0) >= 100">
+                            {{ clinicForm.get('street')!.value?.length ?? 0 }} / 100
+                        </span>
+                    </div>
+
+                    <div class="clinic-map-wrap" [class.clinic-map-wrap--error]="pinTouched() && !pinnedCoords()">
+                        <div class="clinic-map-label">
+                            <span class="material-icons-round">map</span>
+                            Location preview
+                            <div class="map-pin-controls">
+                                @if (pinnedCoords()) {
+                                    <button type="button" class="map-pin-btn map-pin-btn--remove" (click)="removePin()">
+                                        <span class="material-icons-round">location_off</span>
+                                        Remove pin
+                                    </button>
+                                }
+                                <button type="button" class="map-pin-btn" [class.map-pin-btn--active]="pinMode()" (click)="togglePinMode()">
+                                    <span class="material-icons-round">{{ pinMode() ? 'close' : 'add_location' }}</span>
+                                    {{ pinMode() ? 'Cancel' : 'Pin location' }}
+                                </button>
+                            </div>
+                        </div>
+                        @if (pinMode()) {
+                            <div class="map-pin-hint">
+                                <span class="material-icons-round">touch_app</span>
+                                Click anywhere on the map to drop a pin
+                            </div>
+                        }
+                        <div id="clinic-map" class="clinic-map"></div>
+                        @if (pinnedCoords()) {
+                            <div class="map-coords">
+                                <span class="material-icons-round">my_location</span>
+                                {{ pinnedCoords()!.lat }}, {{ pinnedCoords()!.lng }}
+                            </div>
+                        }
+                    </div>
+                    @if (pinTouched() && !pinnedCoords()) {
+                        <span class="field__error">Please pin your clinic's exact location on the map.</span>
+                    }
+
+                    <div class="field">
+                        <label class="field__label">Clinic logo</label>
+                        <div class="field__hint" style="margin-bottom:10px">Recommended: 512×512px, PNG with transparent background, max 2MB.</div>
+
+                        @if (clinicLogoPreview()) {
+                            <div class="logo-preview">
+                                <img [src]="clinicLogoPreview()!" alt="Clinic logo preview" class="logo-preview__img" />
+                                <div class="logo-preview__info">
+                                    <span class="logo-preview__name">{{ clinicLogo()!.name }}</span>
+                                    <button type="button" class="logo-preview__remove" (click)="removeLogo()">
+                                        <span class="material-icons-round">delete</span>
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        } @else {
+                            <label class="logo-upload">
+                                <span class="material-icons-round logo-upload__icon">add_photo_alternate</span>
+                                <span class="logo-upload__text">Click to upload logo</span>
+                                <input type="file" accept="image/*" class="logo-upload__input" (change)="onLogoChange($event)" />
+                            </label>
+                            <div class="logo-default-notice">
+                                <img src="/Screenshot from 2026-04-19 21-48-59.png" alt="Default logo" class="logo-default-notice__img" />
+                                <span>No logo uploaded — the default logo above will be used.</span>
+                            </div>
+                        }
+
+                        @if (clinicLogoError()) {
+                            <span class="field__error">{{ clinicLogoError() }}</span>
+                        }
+                    </div>
+                </form>
+            }
+
+            <!-- Step 3 — Review -->
+            @if (currentStep() === 3) {
+                <div class="ob-step-header">
+                    <div class="ob-step-icon">
+                        <span class="material-icons-round">rate_review</span>
+                    </div>
+                    <h1 class="ob-title">Review your details</h1>
+                    <p class="ob-subtitle">Please confirm everything looks correct before submitting.</p>
+                </div>
+
+                <div class="ob-notice">
+                    <span class="material-icons-round">info</span>
+                    These details cannot be updated once submitted.
+                </div>
+
+                <div class="review-section">
+                    <div class="review-section__title">
+                        <span class="material-icons-round">person</span>
+                        Your Profile
+                    </div>
+                    <div class="review-rows">
+                        <div class="review-row">
+                            <span class="review-row__label">Name</span>
+                            <span class="review-row__value">{{ profileForm.get('firstName')?.value }} {{ profileForm.get('lastName')?.value }}</span>
+                        </div>
+                        <div class="review-row">
+                            <span class="review-row__label">Role</span>
+                            <span class="review-row__value">{{ profileForm.get('role')?.value }}</span>
+                        </div>
+                        <div class="review-row">
+                            <span class="review-row__label">Phone</span>
+                            <span class="review-row__value">{{ profileForm.get('phone')?.value }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="review-section">
+                    <div class="review-section__title">
+                        <span class="material-icons-round">local_hospital</span>
+                        Clinic Details
+                    </div>
+                    <div class="review-rows">
+                        <div class="review-row">
+                            <span class="review-row__label">Logo</span>
+                            <span class="review-row__value">
+                                <img
+                                    [src]="clinicLogoPreview() ?? '/Screenshot from 2026-04-19 21-48-59.png'"
+                                    alt="Clinic logo"
+                                    class="review-logo"
+                                />
+                                @if (!clinicLogoPreview()) {
+                                    <span class="review-logo__default-label">Default logo</span>
+                                }
+                            </span>
+                        </div>
+                        <div class="review-row">
+                            <span class="review-row__label">Clinic name</span>
+                            <span class="review-row__value">{{ clinicForm.get('clinicName')?.value }}</span>
+                        </div>
+                        <div class="review-row">
+                            <span class="review-row__label">Specialties</span>
+                            <span class="review-row__value review-row__value--tags">
+                                @for (s of selectedSpecialties(); track s) {
+                                    <span class="specialty-tag">{{ s }}</span>
+                                }
+                            </span>
+                        </div>
+                        <div class="review-row">
+                            <span class="review-row__label">Country</span>
+                            <span class="review-row__value">{{ clinicForm.get('country')?.value }}</span>
+                        </div>
+                        @if (clinicForm.get('province')?.value) {
+                            <div class="review-row">
+                                <span class="review-row__label">Province / State</span>
+                                <span class="review-row__value">{{ clinicForm.get('province')?.value }}</span>
+                            </div>
+                        }
+                        @if (clinicForm.get('city')?.value) {
+                            <div class="review-row">
+                                <span class="review-row__label">City / District</span>
+                                <span class="review-row__value">{{ clinicForm.get('city')?.value }}</span>
+                            </div>
+                        }
+                        @if (clinicForm.get('street')?.value) {
+                            <div class="review-row">
+                                <span class="review-row__label">Street</span>
+                                <span class="review-row__value">{{ clinicForm.get('street')?.value }}</span>
+                            </div>
+                        }
+                        @if (pinnedCoords()) {
+                            <div class="review-row">
+                                <span class="review-row__label">Coordinates</span>
+                                <span class="review-row__value" style="font-family:monospace;font-size:13px">{{ pinnedCoords()!.lat }}, {{ pinnedCoords()!.lng }}</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            }
+
+            <!-- Step 4 — All Set -->
+            @if (currentStep() === 4) {
+                <div class="complete">
+                    <div class="complete__icon">
+                        <span class="material-icons-round">check_circle</span>
+                    </div>
+                    <h1 class="complete__title">You're all set!</h1>
+                    <p class="complete__subtitle">
+                        Your clinic <strong>{{ clinicForm.get('clinicName')?.value }}</strong> has been successfully created on CareCore.
+                    </p>
+
+                    <div class="complete__steps">
+                        <div class="complete__step">
+                            <div class="complete__step-num">1</div>
+                            <div class="complete__step-text">
+                                <strong>Sign in again</strong> using your email and password on your clinic's login page.
+                            </div>
+                        </div>
+                        <div class="complete__step">
+                            <div class="complete__step-num">2</div>
+                            <div class="complete__step-text">
+                                You'll land directly on your <strong>clinic dashboard</strong> at your subdomain.
+                            </div>
+                        </div>
+                        <div class="complete__step">
+                            <div class="complete__step-num">3</div>
+                            <div class="complete__step-text">
+                                Complete your setup — add staff, set working hours, and configure your services.
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-lg complete__cta" (click)="goToDashboard()">
+                        <span class="material-icons-round" style="font-size:18px">dashboard</span>
+                        Go to Dashboard
+                    </button>
+
+                </div>
+            }
+
+            <!-- Navigation (steps 1–4) -->
+            @if (currentStep() < 4) {
+                <div class="ob-nav">
+                    @if (currentStep() > 1) {
+                        <button type="button" class="btn btn-outline ob-back" (click)="back()" [disabled]="isLoading()">
+                            <span class="material-icons-round" style="font-size:18px">arrow_back</span>
+                            Back
+                        </button>
+                    } @else {
+                        <div></div>
+                    }
+
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-lg"
+                        (click)="currentStep() === 3 ? showSubmitModal.set(true) : next()"
+                        [disabled]="isLoading()"
+                    >
+                        @if (isLoading()) {
+                            <span class="spinner"></span>
+                            Submitting…
+                        } @else if (currentStep() === 3) {
+                            <span class="material-icons-round" style="font-size:18px">check</span>
+                            Confirm & Submit
+                        } @else {
+                            Continue
+                            <span class="material-icons-round" style="font-size:18px">arrow_forward</span>
+                        }
+                    </button>
+                </div>
+            }
+
+            } <!-- end @else isFetching -->
+
+        </div>
+    </main>
+
+</div>

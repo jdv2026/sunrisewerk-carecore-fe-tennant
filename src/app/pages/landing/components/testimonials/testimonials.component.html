@@ -1,0 +1,35 @@
+<section class="section testimonials" id="testimonials">
+    <div class="container">
+        <div class="text-center">
+            <div class="tag">
+                <span class="material-icons-round" style="font-size: 14px">format_quote</span>
+                Customer Stories
+            </div>
+            <h2 class="section-title">Loved by Healthcare Teams</h2>
+            <p class="section-subtitle">Real results from real clinics. Here's what our customers have to say.</p>
+        </div>
+
+        @if (testimonials.length === 0) {
+            <div class="testimonials__empty">
+                <span class="material-icons-round">format_quote</span>
+                <p>No testimonials yet — but we're just getting started.</p>
+            </div>
+        } @else {
+            <div class="testimonials__grid">
+                @for (t of testimonials; track t.name) {
+                    <div class="testimonial-card">
+                        <div class="testimonial-card__stars">★★★★★</div>
+                        <p class="testimonial-card__quote">"{{ t.quote }}"</p>
+                        <div class="testimonial-card__author">
+                            <div class="testimonial-card__avatar" [style.background]="t.avatarColor">{{ t.avatar }}</div>
+                            <div>
+                                <div class="testimonial-card__name">{{ t.name }}</div>
+                                <div class="testimonial-card__role">{{ t.role }}</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

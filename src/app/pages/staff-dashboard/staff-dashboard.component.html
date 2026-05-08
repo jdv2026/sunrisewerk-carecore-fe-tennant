@@ -1,0 +1,92 @@
+<div class="page-layout">
+
+    <app-sidebar [open]="sidebarOpen()" (closeRequest)="sidebarOpen.set(false)" />
+
+    <div class="page-main">
+
+        <header class="topbar">
+            <div class="topbar__left">
+                <button class="hamburger" (click)="sidebarOpen.set(!sidebarOpen())">
+                    <span class="material-icons-round">menu</span>
+                </button>
+                <h1 class="topbar__title">Dashboard</h1>
+            </div>
+        </header>
+
+        <main class="page-content">
+
+            @if (isLoading()) {
+                <div class="loading-wrap">
+                    <span class="spinner"></span>
+                    <p>Loading…</p>
+                </div>
+            } @else {
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat stat--blue">
+                        <span class="material-icons-round">today</span>
+                        <div>
+                            <div class="stat__value">{{ todayAppointments().length }}</div>
+                            <div class="stat__label">Today's Appointments</div>
+                        </div>
+                    </div>
+                    <div class="stat stat--indigo">
+                        <span class="material-icons-round">event</span>
+                        <div>
+                            <div class="stat__value">{{ upcomingCount() }}</div>
+                            <div class="stat__label">Upcoming</div>
+                        </div>
+                    </div>
+                    <div class="stat stat--yellow">
+                        <span class="material-icons-round">schedule</span>
+                        <div>
+                            <div class="stat__value">{{ pendingLeaves() }}</div>
+                            <div class="stat__label">Pending Leaves</div>
+                        </div>
+                    </div>
+                    <div class="stat stat--green">
+                        <span class="material-icons-round">check_circle</span>
+                        <div>
+                            <div class="stat__value">{{ approvedLeaves() }}</div>
+                            <div class="stat__label">Approved Leaves</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's appointments -->
+                <div class="section-header">
+                    <span class="material-icons-round">calendar_today</span>
+                    Today's Schedule
+                </div>
+
+                <div class="card">
+                    @if (todayAppointments().length === 0) {
+                        <div class="empty">
+                            <span class="material-icons-round">event_available</span>
+                            <p>No appointments scheduled for today.</p>
+                        </div>
+                    } @else {
+                        <div class="appt-list">
+                            @for (a of todayAppointments(); track a.id) {
+                                <div class="appt-item">
+                                    <div class="appt-time">{{ formatTime(a.appointment_time) }}</div>
+                                    <div class="appt-avatar">{{ initials(a) }}</div>
+                                    <div class="appt-info">
+                                        <div class="appt-patient">{{ patientName(a) }}</div>
+                                        @if (a.notes) {
+                                            <div class="appt-notes">{{ a.notes }}</div>
+                                        }
+                                    </div>
+                                    <span class="status-badge status-badge--{{ a.status }}">{{ a.status }}</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+            }
+
+        </main>
+    </div>
+</div>

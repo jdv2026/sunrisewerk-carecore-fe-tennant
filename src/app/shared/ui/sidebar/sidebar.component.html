@@ -1,0 +1,56 @@
+@if (showLogoutModal()) {
+    <app-confirm-modal
+        icon="logout"
+        iconColor="danger"
+        title="Sign out?"
+        body="You will be redirected to the login page."
+        confirmLabel="Sign out"
+        cancelLabel="Stay"
+        (confirmed)="confirmLogout()"
+        (cancelled)="showLogoutModal.set(false)"
+    />
+}
+
+@if (open) {
+    <div class="sidebar-backdrop" (click)="close()"></div>
+}
+
+<aside class="sidebar" [class.sidebar--open]="open">
+    <a href="/" class="sidebar-brand">
+        <span class="sidebar-brand__icon">
+            <span class="material-icons-round">favorite</span>
+        </span>
+        <span>Care<strong>Core</strong></span>
+    </a>
+
+    <nav class="sidebar-nav">
+        @for (item of navItems; track item.route) {
+            @if (item.disabled) {
+                <span class="sidebar-nav__item sidebar-nav__item--disabled">
+                    <span class="material-icons-round">{{ item.icon }}</span>
+                    {{ item.label }}
+                    <span class="sidebar-nav__soon">Soon</span>
+                </span>
+            } @else {
+                <a [routerLink]="item.route" routerLinkActive="sidebar-nav__item--active"
+                   class="sidebar-nav__item" (click)="close()">
+                    <span class="material-icons-round">{{ item.icon }}</span>
+                    {{ item.label }}
+                </a>
+            }
+        }
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="sidebar-user">
+            <div class="sidebar-user__avatar">{{ userName().charAt(0).toUpperCase() }}</div>
+            <div class="sidebar-user__info">
+                <div class="sidebar-user__name">{{ userName() }}</div>
+                <div class="sidebar-user__role">{{ userRole() || 'Staff' }}</div>
+            </div>
+        </div>
+        <button class="sidebar-logout" (click)="logout()">
+            <span class="material-icons-round">logout</span>
+        </button>
+    </div>
+</aside>

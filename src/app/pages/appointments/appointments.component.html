@@ -1,0 +1,153 @@
+<div class="page-layout">
+
+    <app-sidebar [open]="sidebarOpen()" (closeRequest)="sidebarOpen.set(false)" />
+
+    <div class="page-main">
+
+        <header class="topbar">
+            <div class="topbar__left">
+                <button class="hamburger" (click)="sidebarOpen.set(!sidebarOpen())">
+                    <span class="material-icons-round">menu</span>
+                </button>
+                <h1 class="topbar__title">Appointments</h1>
+            </div>
+        </header>
+
+        <main class="page-content">
+
+            <!-- Stats -->
+            <div class="appt-stats">
+                <div class="appt-stat appt-stat--blue">
+                    <span class="material-icons-round">today</span>
+                    <div>
+                        <div class="appt-stat__value">{{ todayCount() }}</div>
+                        <div class="appt-stat__label">Today</div>
+                    </div>
+                </div>
+                <div class="appt-stat appt-stat--green">
+                    <span class="material-icons-round">check_circle</span>
+                    <div>
+                        <div class="appt-stat__value">{{ confirmedCount() }}</div>
+                        <div class="appt-stat__label">Confirmed</div>
+                    </div>
+                </div>
+                <div class="appt-stat appt-stat--yellow">
+                    <span class="material-icons-round">schedule</span>
+                    <div>
+                        <div class="appt-stat__value">{{ pendingCount() }}</div>
+                        <div class="appt-stat__label">Pending</div>
+                    </div>
+                </div>
+                <div class="appt-stat appt-stat--red">
+                    <span class="material-icons-round">cancel</span>
+                    <div>
+                        <div class="appt-stat__value">{{ cancelledCount() }}</div>
+                        <div class="appt-stat__label">Cancelled</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="filter-tabs">
+                    @for (f of filters; track f.value) {
+                        <button class="filter-tab" [class.filter-tab--active]="activeFilter() === f.value"
+                            (click)="onFilterChange(f.value)">{{ f.label }}</button>
+                    }
+                </div>
+                <div class="search-wrap">
+                    <span class="material-icons-round search-wrap__icon">search</span>
+                    <input class="search-wrap__input" type="text" placeholder="Search patient or notes…"
+                        [value]="search()" (input)="search.set($any($event.target).value)" />
+                </div>
+            </div>
+
+            <!-- Confirm error -->
+            @if (confirmError()) {
+                <div class="confirm-error">
+                    <span class="material-icons-round">error_outline</span>
+                    {{ confirmError() }}
+                    <button class="confirm-error__close" (click)="confirmError.set(null)">
+                        <span class="material-icons-round">close</span>
+                    </button>
+                </div>
+            }
+
+            <!-- Table -->
+            <div class="table-card">
+
+                @if (isLoading()) {
+                    <div class="table-loading">
+                        <span class="table-spinner"></span>
+                        <p>Loading…</p>
+                    </div>
+                } @else {
+                    <div class="table-scroll">
+                        <table class="appt-table">
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Date & Time</th>
+                                    <th class="hide-sm">Notes</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (filtered().length === 0) {
+                                    <tr>
+                                        <td colspan="5" class="table-empty">
+                                            <span class="material-icons-round">event_busy</span>
+                                            No appointments found
+                                        </td>
+                                    </tr>
+                                }
+                                @for (a of filtered(); track a.id) {
+                                    <tr class="appt-row">
+                                        <td>
+                                            <div class="patient-cell">
+                                                <div class="patient-avatar">{{ initials(a) }}</div>
+                                                <div>
+                                                    <div class="patient-name">{{ patientName(a) }}</div>
+                                                    @if (a.patient?.email) {
+                                                        <div class="patient-email">{{ a.patient!.email }}</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="appt-date">{{ formatDate(a.appointment_date) }}</div>
+                                            <div class="appt-time">{{ formatTime(a.appointment_time) }}</div>
+                                        </td>
+                                        <td class="appt-notes hide-sm">{{ a.notes ?? '—' }}</td>
+                                        <td>
+                                            <span class="status-badge status-badge--{{ a.status }}">
+                                                {{ statusLabel[a.status] ?? a.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (a.status === 'pending') {
+                                                <button class="confirm-btn"
+                                                    [disabled]="confirmingId() === a.id"
+                                                    (click)="confirmAppointment(a)">
+                                                    @if (confirmingId() === a.id) {
+                                                        <span class="confirm-spinner"></span>
+                                                    } @else {
+                                                        <span class="material-icons-round">check_circle</span>
+                                                    }
+                                                    Confirm
+                                                </button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+            </div>
+
+        </main>
+    </div>
+</div>

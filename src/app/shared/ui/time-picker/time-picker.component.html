@@ -1,0 +1,12 @@
+<div class="tp">
+    @for (slot of slots; track slot) {
+        <button
+            type="button"
+            class="tp__slot"
+            [class.tp__slot--selected]="slot === value()"
+            [class.tp__slot--disabled]="disabledSlots().has(slot)"
+            [disabled]="disabledSlots().has(slot)"
+            (click)="select(slot)"
+        >{{ format(slot) }}</button>
+    }
+</div>

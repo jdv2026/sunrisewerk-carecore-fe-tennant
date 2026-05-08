@@ -1,0 +1,112 @@
+@if (solution) {
+<div class="solution-page">
+
+    <header class="solution-hero">
+        <div class="container">
+            <a routerLink="/" class="solution-brand">
+                <span class="solution-brand__icon">
+                    <span class="material-icons-round">favorite</span>
+                </span>
+                <span>Care<strong>Core</strong></span>
+            </a>
+            <div class="tag">
+                <span class="material-icons-round" style="font-size: 14px">{{ solution.heroIcon }}</span>
+                {{ solution.tag }}
+            </div>
+            <h1 class="solution-hero__title">
+                {{ solution.headline }}<br />
+                <span class="gradient-text">{{ solution.headlineAccent }}</span>
+            </h1>
+            <p class="solution-hero__sub">{{ solution.subtitle }}</p>
+            <div class="solution-hero__actions">
+                <a routerLink="/auth/register" class="btn btn-primary btn-lg">
+                    <span class="material-icons-round" style="font-size: 18px">rocket_launch</span>
+                    {{ solution.ctaLabel }}
+                </a>
+                <a routerLink="/auth/login" class="btn btn-outline btn-lg">Log In</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="solution-stats section-sm">
+        <div class="container">
+            <div class="stats-row">
+                @for (stat of solution.stats; track stat.label) {
+                    <div class="stat-item">
+                        <span class="stat-item__value">{{ stat.value }}</span>
+                        <span class="stat-item__label">{{ stat.label }}</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <section class="solution-benefits section">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 56px">
+                <div class="tag">
+                    <span class="material-icons-round" style="font-size: 14px">stars</span>
+                    What You Get
+                </div>
+                <h2 class="section-title">Everything built for your workflow</h2>
+                <p class="section-subtitle">Tools purpose-built for {{ solution.tag.toLowerCase() }}, not adapted from a generic platform.</p>
+            </div>
+            <div class="benefits-grid">
+                @for (benefit of solution.benefits; track benefit.title) {
+                    <div class="benefit-card">
+                        <div class="benefit-card__icon">
+                            <span class="material-icons-round">{{ benefit.icon }}</span>
+                        </div>
+                        <h3>{{ benefit.title }}</h3>
+                        <p>{{ benefit.description }}</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <section class="solution-testimonial section-sm">
+        <div class="container">
+            <div class="testimonial-card">
+                <div class="testimonial-card__quote">
+                    <span class="material-icons-round quote-icon">format_quote</span>
+                    <p>{{ solution.testimonial.quote }}</p>
+                </div>
+                <div class="testimonial-card__author">
+                    <div class="testimonial-card__avatar">
+                        {{ solution.testimonial.author.charAt(0) }}
+                    </div>
+                    <div>
+                        <div class="testimonial-card__name">{{ solution.testimonial.author }}</div>
+                        <div class="testimonial-card__role">{{ solution.testimonial.role }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="solution-cta">
+        <div class="container solution-cta__inner">
+            <h2>Ready to get started?</h2>
+            <p>Join thousands of healthcare providers already using CareCore.</p>
+            <a routerLink="/auth/register" class="btn btn-white btn-lg">
+                <span class="material-icons-round" style="font-size: 18px">rocket_launch</span>
+                {{ solution.ctaLabel }}
+            </a>
+        </div>
+    </section>
+
+    <footer class="solution-footer">
+        <div class="container solution-footer__inner">
+            <span>© {{ year }} CareCore Technologies, Inc.</span>
+            <div class="solution-footer__links">
+                <a routerLink="/about">About</a>
+                <a routerLink="/blog">Blog</a>
+                <a routerLink="/legal/privacy">Privacy</a>
+                <a routerLink="/legal/terms">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+</div>
+}

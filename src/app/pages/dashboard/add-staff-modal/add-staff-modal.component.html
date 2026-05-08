@@ -1,0 +1,189 @@
+<div class="modal-backdrop">
+    <div class="as-modal" role="dialog" aria-modal="true">
+
+        <div class="as-modal__header">
+            <div class="as-modal__icon">
+                <span class="material-icons-round">badge</span>
+            </div>
+            <div>
+                <h2 class="as-modal__title">Add Staff</h2>
+                <p class="as-modal__sub">Register a new staff member to the clinic.</p>
+            </div>
+            <button class="as-modal__close" (click)="dismiss()" aria-label="Close">
+                <span class="material-icons-round">close</span>
+            </button>
+        </div>
+
+        @if (showSuccess()) {
+            <div class="as-success">
+                <div class="as-success__icon">
+                    <span class="material-icons-round">check_circle</span>
+                </div>
+                <h3 class="as-success__title">Staff added successfully!</h3>
+                <p class="as-success__sub">
+                    A Cognito account has been created. Share the temporary password below with the staff member — they'll need it to sign in and set a new password.
+                </p>
+                <div class="as-success__pwd-wrap">
+                    <span class="as-success__pwd">{{ tempPassword() }}</span>
+                    <button type="button" class="as-success__copy" (click)="copyPassword()">
+                        <span class="material-icons-round">{{ copiedPassword() ? 'check' : 'content_copy' }}</span>
+                        {{ copiedPassword() ? 'Copied' : 'Copy' }}
+                    </button>
+                </div>
+                @if (cognitoWarning()) {
+                    <div class="as-cognito-warn">
+                        <span class="material-icons-round">warning_amber</span>
+                        {{ cognitoWarning() }}
+                    </div>
+                }
+                <div class="as-success__actions">
+                    <button type="button" class="btn btn-outline" (click)="done()">
+                        <span class="material-icons-round" style="font-size:18px">close</span>
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary" (click)="goToDashboard()">
+                        <span class="material-icons-round" style="font-size:18px">dashboard</span>
+                        Go to Dashboard
+                    </button>
+                </div>
+            </div>
+        } @else {
+
+        @if (error()) {
+            <div class="as-error">
+                <span class="material-icons-round">error_outline</span>
+                {{ error() }}
+            </div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="as-form">
+
+            <!-- Name row -->
+            <div class="field-row">
+                <div class="field" [class.field--error]="givenName.invalid && givenName.touched">
+                    <label class="field__label" for="as-given">First name <span class="field__req">*</span></label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">person_outline</span>
+                        <input id="as-given" type="text" class="field__input"
+                            placeholder="Maria" formControlName="given_name" autocomplete="given-name" />
+                    </div>
+                    @if (givenName.invalid && givenName.touched) {
+                        <span class="field__error">First name is required.</span>
+                    }
+                </div>
+
+                <div class="field" [class.field--error]="familyName.invalid && familyName.touched">
+                    <label class="field__label" for="as-family">Last name <span class="field__req">*</span></label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">person_outline</span>
+                        <input id="as-family" type="text" class="field__input"
+                            placeholder="Santos" formControlName="family_name" autocomplete="family-name" />
+                    </div>
+                    @if (familyName.invalid && familyName.touched) {
+                        <span class="field__error">Last name is required.</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Contact row -->
+            <div class="field-row">
+                <div class="field" [class.field--error]="email.invalid && email.touched">
+                    <label class="field__label" for="as-email">Email <span class="field__req">*</span></label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">mail_outline</span>
+                        <input id="as-email" type="email" class="field__input"
+                            placeholder="maria@clinic.com" formControlName="email" autocomplete="email" />
+                    </div>
+                    @if (email.invalid && email.touched) {
+                        <span class="field__error">
+                            @if (email.errors?.['required']) { Email is required. }
+                            @else { Enter a valid email address. }
+                        </span>
+                    }
+                </div>
+
+                <div class="field">
+                    <label class="field__label" for="as-number">Phone</label>
+                    <div class="field__input-wrap">
+                        <span class="field__icon material-icons-round">phone</span>
+                        <input id="as-number" type="tel" class="field__input"
+                            placeholder="+63 912 345 6789" formControlName="number" autocomplete="tel" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role -->
+            <div class="field" [class.field--error]="role.invalid && role.touched">
+                <label class="field__label" for="as-role">Role <span class="field__req">*</span></label>
+                <div class="field__input-wrap field__input-wrap--select">
+                    <span class="field__icon material-icons-round">work_outline</span>
+                    <select id="as-role" class="field__input field__select" formControlName="role">
+                        <option value="">Select a role</option>
+                        @for (r of roles; track r.value) {
+                            <option [value]="r.value">{{ r.label }}</option>
+                        }
+                    </select>
+                </div>
+                @if (role.invalid && role.touched) {
+                    <span class="field__error">Role is required.</span>
+                }
+            </div>
+
+            <!-- Specialty -->
+            <div class="field">
+                <label class="field__label" for="as-specialty">
+                    Specialty <span class="field__optional">(optional)</span>
+                    <span class="specialty-counter" [class.specialty-counter--warn]="specialtyCharCount() > 200" [class.specialty-counter--over]="specialtyCharCount() >= 255">
+                        {{ specialtyCharCount() }}/255
+                    </span>
+                </label>
+                <div class="specialty-input-row">
+                    <div class="field__input-wrap" style="flex:1">
+                        <span class="field__icon material-icons-round">local_hospital</span>
+                        <input id="as-specialty" type="text" class="field__input"
+                            placeholder="e.g. Cardiology"
+                            [value]="specialtyInput()"
+                            (input)="specialtyInput.set($any($event.target).value)"
+                            (keydown.enter)="$event.preventDefault(); addSpecialty()" />
+                    </div>
+                    <button type="button" class="specialty-add-btn" (click)="addSpecialty()">
+                        <span class="material-icons-round">add</span>
+                        Add
+                    </button>
+                </div>
+                @if (specialties().length) {
+                    <div class="specialty-tags">
+                        @for (s of specialties(); track s) {
+                            <span class="specialty-tag">
+                                {{ s }}
+                                <button type="button" class="specialty-tag__remove" (click)="removeSpecialty(s)">
+                                    <span class="material-icons-round">close</span>
+                                </button>
+                            </span>
+                        }
+                    </div>
+                }
+                @if (specialtyError()) {
+                    <span class="field__error">{{ specialtyError() }}</span>
+                }
+            </div>
+
+            <div class="as-modal__actions">
+                <button type="button" class="btn btn-outline" (click)="dismiss()" [disabled]="isLoading()">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="isLoading()">
+                    @if (isLoading()) {
+                        <span class="spinner"></span>
+                        Saving…
+                    } @else {
+                        <span class="material-icons-round" style="font-size:18px">person_add</span>
+                        Add Staff
+                    }
+                </button>
+            </div>
+
+        </form>
+        }
+    </div>
+</div>

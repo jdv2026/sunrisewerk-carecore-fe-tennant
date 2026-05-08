@@ -1,0 +1,151 @@
+<div class="page-layout">
+
+    <app-sidebar [open]="sidebarOpen()" (closeRequest)="sidebarOpen.set(false)" />
+
+    <div class="page-main">
+
+        <header class="topbar">
+            <div class="topbar__left">
+                <button class="hamburger" (click)="sidebarOpen.set(!sidebarOpen())">
+                    <span class="material-icons-round">menu</span>
+                </button>
+                <h1 class="topbar__title">My Profile</h1>
+            </div>
+        </header>
+
+        <main class="page-content">
+
+            @if (isLoading()) {
+                <div class="loading-wrap">
+                    <span class="spinner"></span>
+                </div>
+            } @else if (profile()) {
+
+                <!-- Profile card -->
+                <div class="card profile-card">
+                    <div class="avatar">{{ initials }}</div>
+                    <div class="profile-info">
+                        <div class="profile-name">{{ fullName }}</div>
+                        <div class="profile-email">{{ profile()!.email }}</div>
+                        <div class="profile-badges">
+                            <span class="badge badge--role">
+                                <span class="material-icons-round">badge</span>
+                                {{ profile()!.isStaff ? 'Staff' : 'Admin' }}
+                            </span>
+                            @if (profile()!.clinicName) {
+                                <span class="badge badge--clinic">
+                                    <span class="material-icons-round">local_hospital</span>
+                                    {{ profile()!.clinicName }}
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info rows -->
+                <div class="card info-card">
+                    <h2 class="card__title">Account Details</h2>
+                    <div class="info-grid">
+                        <div class="info-row">
+                            <span class="info-row__label">First Name</span>
+                            <span class="info-row__value">{{ profile()!.givenName }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-row__label">Last Name</span>
+                            <span class="info-row__value">{{ profile()!.familyName }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-row__label">Email</span>
+                            <span class="info-row__value">{{ profile()!.email }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-row__label">Role</span>
+                            <span class="info-row__value">{{ profile()!.isStaff ? 'Staff Member' : 'Administrator' }}</span>
+                        </div>
+                        @if (profile()!.clinicName) {
+                            <div class="info-row">
+                                <span class="info-row__label">Clinic</span>
+                                <span class="info-row__value">{{ profile()!.clinicName }}</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Change password -->
+                <div class="card pw-card">
+                    <h2 class="card__title">Change Password</h2>
+                    <p class="card__subtitle">Update your password. You must enter your current password to confirm changes.</p>
+
+                    <div class="pw-form">
+
+                        <div class="field">
+                            <label class="field__label">Current Password</label>
+                            <div class="field__wrap">
+                                <input class="field__input" [type]="showCurrentPassword() ? 'text' : 'password'"
+                                    placeholder="Enter current password"
+                                    [(ngModel)]="pwForm.current"
+                                    autocomplete="current-password" />
+                                <button type="button" class="field__toggle" (click)="showCurrentPassword.set(!showCurrentPassword())">
+                                    <span class="material-icons-round">{{ showCurrentPassword() ? 'visibility_off' : 'visibility' }}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label">New Password</label>
+                            <div class="field__wrap">
+                                <input class="field__input" [type]="showNewPassword() ? 'text' : 'password'"
+                                    placeholder="Min. 8 characters"
+                                    [(ngModel)]="pwForm.newPw"
+                                    autocomplete="new-password" />
+                                <button type="button" class="field__toggle" (click)="showNewPassword.set(!showNewPassword())">
+                                    <span class="material-icons-round">{{ showNewPassword() ? 'visibility_off' : 'visibility' }}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label">Confirm New Password</label>
+                            <div class="field__wrap">
+                                <input class="field__input" [type]="showConfirmPassword() ? 'text' : 'password'"
+                                    placeholder="Repeat new password"
+                                    [(ngModel)]="pwForm.confirm"
+                                    autocomplete="new-password" />
+                                <button type="button" class="field__toggle" (click)="showConfirmPassword.set(!showConfirmPassword())">
+                                    <span class="material-icons-round">{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        @if (pwError()) {
+                            <div class="alert alert--error">
+                                <span class="material-icons-round">error_outline</span>
+                                {{ pwError() }}
+                            </div>
+                        }
+
+                        @if (pwSuccess()) {
+                            <div class="alert alert--success">
+                                <span class="material-icons-round">check_circle</span>
+                                Password updated successfully.
+                            </div>
+                        }
+
+                        <div class="pw-footer">
+                            <button class="btn-save" (click)="submitPasswordChange()" [disabled]="pwLoading()">
+                                @if (pwLoading()) {
+                                    <span class="btn-spinner"></span> Updating…
+                                } @else {
+                                    <span class="material-icons-round">lock_reset</span> Update Password
+                                }
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            }
+
+        </main>
+    </div>
+</div>

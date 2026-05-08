@@ -1,0 +1,126 @@
+.cta-banner {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f172a 0%, #1a237e 50%, #0284c7 100%);
+    padding: 96px 0;
+
+    &__bg {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .cta-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.15;
+
+        &-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--primary);
+            top: -200px;
+            right: -100px;
+        }
+        &-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary);
+            bottom: -150px;
+            left: -100px;
+        }
+    }
+
+    &__inner {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__icon {
+        width: 72px;
+        height: 72px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        .material-icons-round {
+            font-size: 32px;
+            color: #fff;
+        }
+    }
+
+    &__title {
+        font-size: clamp(28px, 4vw, 44px);
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.5px;
+        margin-bottom: 16px;
+    }
+
+    &__sub {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.7);
+        max-width: 500px;
+        line-height: 1.6;
+        margin-bottom: 36px;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    &__note {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.45);
+        text-align: center;
+    }
+
+    &__sales {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+
+        span {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        a {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+
+            &:hover { color: var(--primary-light); }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .cta-banner {
+        padding: 64px 0;
+        &__sub { font-size: 16px; }
+    }
+}
+
+@media (max-width: 480px) {
+    .cta-banner {
+        padding: 48px 0;
+        &__actions { flex-direction: column; align-items: stretch; }
+        .btn { justify-content: center; }
+    }
+}

@@ -1,0 +1,89 @@
+<div class="legal-page">
+    <div class="legal-container">
+
+        <div class="legal-header">
+            <a routerLink="/" class="legal-brand">
+                <span class="legal-brand__icon">
+                    <span class="material-icons-round">favorite</span>
+                </span>
+                <span>Care<strong>Core</strong></span>
+            </a>
+            <h1 class="legal-title">Cookie Policy</h1>
+            <p class="legal-meta">Last updated: {{ lastUpdated }}</p>
+        </div>
+
+        <div class="legal-body">
+
+            <div class="legal-notice">
+                <span class="material-icons-round">info</span>
+                This Cookie Policy explains how CareCore uses cookies and similar browser storage technologies when you use our platform.
+            </div>
+
+            <section class="legal-section">
+                <h2>1. What Are Cookies</h2>
+                <p>Cookies are small text files stored on your device when you visit a website. CareCore also uses browser storage mechanisms (localStorage and sessionStorage) which function similarly to cookies to keep your session active and remember your preferences.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>2. How We Use Cookies</h2>
+                <p>CareCore uses only essential cookies and browser storage. We do not use advertising, analytics, or third-party tracking cookies.</p>
+                <h3>Authentication & Session</h3>
+                <ul>
+                    <li>Store your login session tokens issued by AWS Cognito</li>
+                    <li>Keep you signed in between page visits</li>
+                    <li>Invalidate your session securely when you sign out</li>
+                </ul>
+                <h3>Preferences</h3>
+                <ul>
+                    <li>Remember your "Remember me" login preference</li>
+                    <li>Store user interface settings (e.g. selected language or timezone)</li>
+                </ul>
+            </section>
+
+            <section class="legal-section">
+                <h2>3. Types of Storage We Use</h2>
+                <p>Depending on your login preference:</p>
+                <ul>
+                    <li><strong>localStorage:</strong> Used when you select "Remember me" — your session persists across browser restarts until you sign out</li>
+                    <li><strong>sessionStorage:</strong> Used when you do not select "Remember me" — your session is cleared when you close the browser tab</li>
+                </ul>
+                <p>No persistent tracking cookies are set on your device.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>4. Third-Party Cookies</h2>
+                <p>If you choose to sign in with Google, Google may set its own cookies as part of the OAuth authentication flow. These are governed by <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>. CareCore does not control or have access to these cookies.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>5. Managing Cookies</h2>
+                <p>You can control and delete cookies through your browser settings. Please note that disabling essential cookies will prevent CareCore from functioning correctly — you will not be able to remain signed in.</p>
+                <p>To clear your CareCore session manually, use the Sign Out option within the application.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>6. Changes to This Policy</h2>
+                <p>We may update this Cookie Policy from time to time. Any changes will be posted on this page with an updated date. We will notify registered users by email if changes are material.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>7. Contact Us</h2>
+                <p>If you have questions about our use of cookies, please contact:</p>
+                <div class="legal-contact">
+                    <p><strong>CareCore Privacy Team</strong></p>
+                    <p>Email: <a href="mailto:privacy@carecore.app">privacy&#64;carecore.app</a></p>
+                </div>
+            </section>
+
+        </div>
+
+        <div class="legal-footer">
+            <a routerLink="/" class="legal-back">
+                <span class="material-icons-round">arrow_back</span>
+                Back to Home
+            </a>
+            <a routerLink="/legal/privacy" class="legal-link">Privacy Policy</a>
+        </div>
+
+    </div>
+</div>

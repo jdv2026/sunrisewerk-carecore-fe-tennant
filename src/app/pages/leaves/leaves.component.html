@@ -1,0 +1,175 @@
+<div class="page-layout">
+
+    <app-sidebar [open]="sidebarOpen()" (closeRequest)="sidebarOpen.set(false)" />
+
+    <div class="page-main">
+
+        <header class="topbar">
+            <div class="topbar__left">
+                <button class="hamburger" (click)="sidebarOpen.set(!sidebarOpen())">
+                    <span class="material-icons-round">menu</span>
+                </button>
+                <h1 class="topbar__title">My Leaves</h1>
+            </div>
+            <button class="btn-new" (click)="openModal()">
+                <span class="material-icons-round">add</span>
+                <span class="btn-new__label">Request Leave</span>
+            </button>
+        </header>
+
+        <main class="page-content">
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat stat--blue">
+                    <span class="material-icons-round">event_note</span>
+                    <div>
+                        <div class="stat__value">{{ totalCount() }}</div>
+                        <div class="stat__label">Total</div>
+                    </div>
+                </div>
+                <div class="stat stat--yellow">
+                    <span class="material-icons-round">schedule</span>
+                    <div>
+                        <div class="stat__value">{{ pendingCount() }}</div>
+                        <div class="stat__label">Pending</div>
+                    </div>
+                </div>
+                <div class="stat stat--green">
+                    <span class="material-icons-round">check_circle</span>
+                    <div>
+                        <div class="stat__value">{{ approvedCount() }}</div>
+                        <div class="stat__label">Approved</div>
+                    </div>
+                </div>
+                <div class="stat stat--red">
+                    <span class="material-icons-round">cancel</span>
+                    <div>
+                        <div class="stat__value">{{ rejectedCount() }}</div>
+                        <div class="stat__label">Rejected</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-card">
+
+                @if (isLoading()) {
+                    <div class="table-loading">
+                        <span class="table-spinner"></span>
+                        <p>Loading…</p>
+                    </div>
+                } @else if (loadError()) {
+                    <div class="table-error">
+                        <span class="material-icons-round">error_outline</span>
+                        {{ loadError() }}
+                    </div>
+                } @else {
+                    <div class="table-scroll">
+                        <table class="leaves-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th class="hide-sm">Reason</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (leaves().length === 0) {
+                                    <tr>
+                                        <td colspan="5" class="table-empty">
+                                            <span class="material-icons-round">event_busy</span>
+                                            No leave requests yet
+                                        </td>
+                                    </tr>
+                                }
+                                @for (l of leaves(); track l.id) {
+                                    <tr class="leave-row">
+                                        <td>
+                                            <span class="leave-type leave-type--{{ l.type }}">
+                                                {{ l.type | titlecase }}
+                                            </span>
+                                        </td>
+                                        <td class="date-cell">{{ formatDate(l.start_date) }}</td>
+                                        <td class="date-cell">{{ formatDate(l.end_date) }}</td>
+                                        <td class="reason-cell hide-sm">{{ l.reason || '—' }}</td>
+                                        <td>
+                                            <span class="status-badge status-badge--{{ l.status }}">
+                                                {{ statusLabel[l.status] }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- Create Leave Modal -->
+@if (showModal()) {
+    <div class="modal-backdrop" (click)="closeModal()"></div>
+    <div class="modal">
+        <div class="modal__header">
+            <h2 class="modal__title">Request Leave</h2>
+            <button class="modal__close" (click)="closeModal()">
+                <span class="material-icons-round">close</span>
+            </button>
+        </div>
+
+        <div class="modal__body">
+
+            <div class="field">
+                <label class="field__label">Leave Type</label>
+                <select class="field__select" [(ngModel)]="form.type">
+                    @for (t of leaveTypes; track t.value) {
+                        <option [value]="t.value">{{ t.label }}</option>
+                    }
+                </select>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label class="field__label">Start Date</label>
+                    <input class="field__input" type="date" [(ngModel)]="form.start_date" />
+                </div>
+                <div class="field">
+                    <label class="field__label">End Date</label>
+                    <input class="field__input" type="date" [(ngModel)]="form.end_date" />
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="field__label">Reason</label>
+                <textarea class="field__textarea" rows="3" placeholder="Briefly describe the reason…"
+                    [(ngModel)]="form.reason"></textarea>
+            </div>
+
+            @if (submitError()) {
+                <div class="submit-error">
+                    <span class="material-icons-round">error_outline</span>
+                    {{ submitError() }}
+                </div>
+            }
+
+        </div>
+
+        <div class="modal__footer">
+            <button class="btn-cancel" (click)="closeModal()" [disabled]="isSubmitting()">Cancel</button>
+            <button class="btn-submit" (click)="submitLeave()" [disabled]="isSubmitting()">
+                @if (isSubmitting()) {
+                    <span class="btn-spinner"></span> Submitting…
+                } @else {
+                    <span class="material-icons-round">send</span> Submit Request
+                }
+            </button>
+        </div>
+    </div>
+}
