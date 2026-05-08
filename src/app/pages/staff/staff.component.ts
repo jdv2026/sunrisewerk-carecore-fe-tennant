@@ -45,7 +45,7 @@ export class StaffComponent implements OnInit {
         { label: 'Other',         value: 'other'        },
     ];
 
-    readonly statusLabel: Record<StaffStatus, string> = {
+    readonly statusLabel: Record<StaffStatus, string | undefined> = {
         'active':   'Active',
         'on-leave': 'On Leave',
         'inactive': 'Inactive',

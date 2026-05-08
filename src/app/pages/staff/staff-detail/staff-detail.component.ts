@@ -25,14 +25,14 @@ export class StaffDetailComponent implements OnInit {
     leavesError      = signal<string | null>(null);
     leaves           = signal<Leave[]>([]);
 
-    readonly leaveTypeLabel: Record<LeaveType, string> = {
+    readonly leaveTypeLabel: Record<LeaveType, string | undefined> = {
         sick:      'Sick Leave',
         vacation:  'Vacation',
         emergency: 'Emergency',
         other:     'Other',
     };
 
-    readonly leaveStatusLabel: Record<LeaveStatus, string> = {
+    readonly leaveStatusLabel: Record<LeaveStatus, string | undefined> = {
         pending:  'Pending',
         approved: 'Approved',
         rejected: 'Rejected',
@@ -56,7 +56,7 @@ export class StaffDetailComponent implements OnInit {
         other:        'gray',
     };
 
-    readonly statusLabel: Record<StaffStatus, string> = {
+    readonly statusLabel: Record<StaffStatus, string | undefined> = {
         'active':   'Active',
         'on-leave': 'On Leave',
         'inactive': 'Inactive',

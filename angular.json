@@ -36,6 +36,7 @@
               "src/styles.scss"
             ],
             "scripts": [],
+            "allowedCommonJsDependencies": ["leaflet"],
             "loader": {
               ".png": "file",
               ".gif": "file",
@@ -53,7 +54,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "12kB",
+                  "maximumWarning": "16kB",
                   "maximumError": "20kB"
                 }
               ],

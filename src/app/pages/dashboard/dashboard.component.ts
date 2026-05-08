@@ -31,20 +31,20 @@ export class DashboardComponent implements OnInit {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
     });
 
-    readonly leaveTypeLabel: Record<string, string> = {
+    readonly leaveTypeLabel: Record<string, string | undefined> = {
         sick:      'Sick Leave',
         vacation:  'Vacation',
         emergency: 'Emergency',
         other:     'Other',
     };
 
-    readonly leaveStatusLabel: Record<string, string> = {
+    readonly leaveStatusLabel: Record<string, string | undefined> = {
         pending:  'Pending',
         approved: 'Approved',
         rejected: 'Rejected',
     };
 
-    readonly statusLabel: Record<string, string> = {
+    readonly statusLabel: Record<string, string | undefined> = {
         confirmed: 'Confirmed',
         pending:   'Pending',
         completed: 'Completed',

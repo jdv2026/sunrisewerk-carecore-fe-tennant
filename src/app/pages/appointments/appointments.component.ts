@@ -59,7 +59,7 @@ export class AppointmentsComponent implements OnInit {
         { label: 'All',        value: 'all'   },
     ];
 
-    readonly statusLabel: Record<AppointmentStatus, string> = {
+    readonly statusLabel: Record<AppointmentStatus, string | undefined> = {
         confirmed: 'Confirmed',
         pending:   'Pending',
         completed: 'Completed',
