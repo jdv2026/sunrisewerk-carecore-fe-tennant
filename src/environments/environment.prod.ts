@@ -17,5 +17,6 @@ export const environment = {
         redirectSignOut:  'https://www.sunrisewerk.com/auth/login',
     },
     backendApi:        'https://PROD_BACKEND_API/',
-    laravelBackendApi: 'https://privateusers.sunrisewerk.com/api/',
+    laravelAdminBackendApi: 'https://adminprivateusers.sunrisewerk.com/api/',
+    laravelStaffBackendApi: 'https://staffprivateusers.sunrisewerk.com/api/',
 };
