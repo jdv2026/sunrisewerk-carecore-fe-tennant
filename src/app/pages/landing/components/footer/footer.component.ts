@@ -15,7 +15,6 @@ export class FooterComponent {
             heading: 'Product',
             items: [
                 { label: 'Features', route: '/', fragment: 'features' },
-                { label: 'Pricing', route: '/', fragment: 'pricing' },
                 { label: 'Changelog' },
                 { label: 'Roadmap' },
             ],
