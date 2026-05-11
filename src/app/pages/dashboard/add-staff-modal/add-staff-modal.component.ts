@@ -99,7 +99,7 @@ export class AddStaffModalComponent {
                 specialty:     this.specialties().length ? this.specialties().join(', ') : null,
             };
             await firstValueFrom(
-                this.http.post(`${environment.laravelBackendApi}staffs`, body, { headers })
+                this.http.post(`${environment.laravelAdminBackendApi}staffs`, body, { headers })
             );
 
             const pwd = this.generateTempPassword();

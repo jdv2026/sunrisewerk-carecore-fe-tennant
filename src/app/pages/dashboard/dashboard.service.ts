@@ -89,7 +89,7 @@ export class DashboardService {
             this.authService.getTokenClaims(),
         ]);
         await firstValueFrom(
-            this.http.patch(`${environment.laravelBackendApi}leaves/${id}/confirm`, {
+            this.http.patch(`${environment.laravelAdminBackendApi}leaves/${id}/confirm`, {
                 tennant_email: claims?.email      ?? '',
                 clinic_name:   claims?.clinicName ?? '',
             }, { headers })
@@ -102,7 +102,7 @@ export class DashboardService {
             this.authService.getTokenClaims(),
         ]);
         await firstValueFrom(
-            this.http.patch(`${environment.laravelBackendApi}leaves/${id}/reject`, {
+            this.http.patch(`${environment.laravelAdminBackendApi}leaves/${id}/reject`, {
                 tennant_email: claims?.email      ?? '',
                 clinic_name:   claims?.clinicName ?? '',
             }, { headers })
@@ -116,7 +116,7 @@ export class DashboardService {
         ]);
         const params = new HttpParams({ fromObject: claims ? { email: claims.email, clinic_name: claims.clinicName } : {} });
         return firstValueFrom(
-            this.http.get<LeavesListResponse>(`${environment.laravelBackendApi}leaves`, { headers, params })
+            this.http.get<LeavesListResponse>(`${environment.laravelAdminBackendApi}leaves`, { headers, params })
         );
     }
 
@@ -127,7 +127,7 @@ export class DashboardService {
         ]);
         const params = new HttpParams({ fromObject: claims ? { email: claims.email, clinic_name: claims.clinicName } : {} });
         return firstValueFrom(
-            this.http.get<DashboardResponse>(`${environment.laravelBackendApi}dashboard`, { headers, params })
+            this.http.get<DashboardResponse>(`${environment.laravelAdminBackendApi}dashboard`, { headers, params })
         );
     }
 }

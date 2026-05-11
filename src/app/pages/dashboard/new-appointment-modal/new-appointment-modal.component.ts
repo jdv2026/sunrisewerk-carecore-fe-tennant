@@ -136,7 +136,7 @@ export class NewAppointmentModalComponent implements OnInit {
                 clinic_name:   claims?.clinicName ?? '',
             };
             await firstValueFrom(
-                this.http.post(`${environment.laravelBackendApi}appointments`, body, { headers })
+                this.http.post(`${environment.laravelAdminBackendApi}appointments`, body, { headers })
             );
             this.bookedDetail.set({
                 email: this.form.value.email        ?? '',

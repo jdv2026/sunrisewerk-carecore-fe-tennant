@@ -69,7 +69,7 @@ export class AddPatientModalComponent {
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
             });
             await firstValueFrom(
-                this.http.post(`${environment.laravelBackendApi}patients/store`, {
+                this.http.post(`${environment.laravelAdminBackendApi}patients/store`, {
                     ...this.form.value,
                     tennant_email: claims?.email      ?? '',
                     clinic_name:   claims?.clinicName ?? '',

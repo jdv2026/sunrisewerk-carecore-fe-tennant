@@ -49,8 +49,8 @@ export class AppointmentsService {
             this.authService.getTokenClaims(),
         ]);
         const url = claims?.isStaff
-            ? `${environment.laravelBackendApi}non-tennant/appointments/${id}/confirm`
-            : `${environment.laravelBackendApi}appointments/${id}/confirm`;
+            ? `${environment.laravelStaffBackendApi}non-tennant/appointments/${id}/confirm`
+            : `${environment.laravelAdminBackendApi}appointments/${id}/confirm`;
         const body = claims?.isStaff
             ? { email: claims.email }
             : { tennant_email: claims?.email ?? '', clinic_name: claims?.clinicName ?? '' };
@@ -65,7 +65,7 @@ export class AppointmentsService {
         let params = new HttpParams({ fromObject: claims ? { email: claims.email, clinic_name: claims.clinicName } : {} });
         if (filter) params = params.set('filter', filter);
         return firstValueFrom(
-            this.http.get<AppointmentsResponse>(`${environment.laravelBackendApi}appointments`, { headers, params })
+            this.http.get<AppointmentsResponse>(`${environment.laravelAdminBackendApi}appointments`, { headers, params })
         );
     }
 
@@ -78,7 +78,7 @@ export class AppointmentsService {
         if (claims?.email) params = params.set('email', claims.email);
         if (filter) params = params.set('filter', filter);
         return firstValueFrom(
-            this.http.get<AppointmentsResponse>(`${environment.laravelBackendApi}non-tennant/staffs/appointments`, { headers, params })
+            this.http.get<AppointmentsResponse>(`${environment.laravelStaffBackendApi}non-tennant/staffs/appointments`, { headers, params })
         );
     }
 }

@@ -54,7 +54,7 @@ export class LeavesService {
             clinic_name: claims.clinicName,
         } : {} });
         return firstValueFrom(
-			this.http.get<LeavesResponse>(`${environment.laravelBackendApi}non-tennant/leaves`, { headers, params })
+			this.http.get<LeavesResponse>(`${environment.laravelStaffBackendApi}non-tennant/leaves`, { headers, params })
         );
     }
 
@@ -64,7 +64,7 @@ export class LeavesService {
             this.authService.getTokenClaims(),
         ]);
         await firstValueFrom(
-            this.http.post(`${environment.laravelBackendApi}non-tennant/leaves`, {
+            this.http.post(`${environment.laravelStaffBackendApi}non-tennant/leaves`, {
                 staff_email: claims?.email ?? '',
                 type:        data.type,
                 start_date:  data.start_date,

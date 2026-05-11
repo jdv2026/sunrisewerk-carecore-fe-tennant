@@ -89,7 +89,7 @@ export class StaffService {
             this.authService.getTokenClaims(),
         ]);
         await firstValueFrom(
-            this.http.post(`${environment.laravelBackendApi}staffs/schedule`, {
+            this.http.post(`${environment.laravelAdminBackendApi}staffs/schedule`, {
                 email:         staffEmail,
                 day,
                 start_time,
@@ -107,7 +107,7 @@ export class StaffService {
         ]);
         const capitalized = status.charAt(0).toUpperCase() + status.slice(1);
         await firstValueFrom(
-            this.http.patch(`${environment.laravelBackendApi}staffs/${staffId}/status`, {
+            this.http.patch(`${environment.laravelAdminBackendApi}staffs/${staffId}/status`, {
                 status:        capitalized,
                 tennant_email: claims?.email      ?? '',
                 clinic_name:   claims?.clinicName ?? '',
@@ -125,7 +125,7 @@ export class StaffService {
             clinic_name:   claims.clinicName,
         } : {} });
         await firstValueFrom(
-            this.http.delete(`${environment.laravelBackendApi}staffs/schedule/${scheduleId}`, { headers, params })
+            this.http.delete(`${environment.laravelAdminBackendApi}staffs/schedule/${scheduleId}`, { headers, params })
         );
     }
 
@@ -139,7 +139,7 @@ export class StaffService {
             clinic_name: claims.clinicName,
         } : {} });
         return firstValueFrom(
-            this.http.get<LeavesResponse>(`${environment.laravelBackendApi}leaves/${staffId}`, { headers, params })
+            this.http.get<LeavesResponse>(`${environment.laravelAdminBackendApi}leaves/${staffId}`, { headers, params })
         );
     }
 
@@ -153,7 +153,7 @@ export class StaffService {
             clinic_name: claims.clinicName,
         } : {} });
         return firstValueFrom(
-            this.http.get<DoctorsResponse>(`${environment.laravelBackendApi}staffs/doctors`, { headers, params })
+            this.http.get<DoctorsResponse>(`${environment.laravelAdminBackendApi}staffs/doctors`, { headers, params })
         );
     }
 
@@ -167,7 +167,7 @@ export class StaffService {
             clinic_name: claims.clinicName,
         } : {} });
         return firstValueFrom(
-            this.http.get<StaffResponse>(`${environment.laravelBackendApi}staffs`, { headers, params })
+            this.http.get<StaffResponse>(`${environment.laravelAdminBackendApi}staffs`, { headers, params })
         );
     }
 }
